@@ -17,7 +17,7 @@ export default function DoctorLayout() {
     <>
       <Stack initialRouteName="index" screenOptions={{ headerShown: false }} />
 
-      <StatusBar backgroundColor="#f7f7ff" style="dark" />
+      <StatusBar backgroundColor="#fff7fe" style="dark" />
     </>
   );
 }

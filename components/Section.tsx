@@ -22,7 +22,7 @@ export default function Section({
         <Text className="text-lg font-pbold">{title}</Text>
         {showSeeAll ? (
           <Pressable onPress={onSeeAll}>
-            <Text className="text-sm font-psemibold text-blue-500">
+            <Text className="text-sm font-psemibold text-aloha-500">
               See All
             </Text>
           </Pressable>

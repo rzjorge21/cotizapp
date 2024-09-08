@@ -24,13 +24,13 @@ export default function Doctor() {
 
   if (!DoctorObj) {
     return (
-      <SafeAreaView className="bg-[#f7f7ff] min-h-screen">
+      <SafeAreaView className="bg-[#fff7fe] min-h-screen">
         <CustomHeader
           title="Doctor's Details"
           otherStyles="my-2 px-4"
           rightElement={
-            <Pressable className="rounded-full w-11 h-11 border-blue-200 bg-white border-2 flex justify-center items-center">
-              <Feather name="bell" size={24} color="#3b82f6" />
+            <Pressable className="rounded-full w-11 h-11 border-aloha-200 bg-white border-2 flex justify-center items-center">
+              <Feather name="bell" size={24} color="#d45f77" />
             </Pressable>
           }
         />
@@ -40,13 +40,13 @@ export default function Doctor() {
   }
 
   return (
-    <SafeAreaView className="bg-[#f7f7ff] min-h-full py-2 relative">
+    <SafeAreaView className="bg-[#fff7fe] min-h-full py-2 relative">
       <CustomHeader
         title="Doctor's Details"
         otherStyles="my-2 px-4"
         rightElement={
-          <Pressable className="rounded-full w-11 h-11 border-blue-200 bg-white border-2 flex justify-center items-center">
-            <Feather name="bell" size={24} color="#3b82f6" />
+          <Pressable className="rounded-full w-11 h-11 border-aloha-200 bg-white border-2 flex justify-center items-center">
+            <Feather name="bell" size={24} color="#d45f77" />
           </Pressable>
         }
       />
@@ -64,7 +64,7 @@ export default function Doctor() {
           </View>
           <View className="w-3/5 pl-2 justify-between">
             <Text className="text-xl font-psemibold">Dr. {DoctorObj.name}</Text>
-            <Text className="text-md text-blue-500">
+            <Text className="text-md text-aloha-500">
               {DoctorObj.specialist}
             </Text>
             <Text className=" text-md text-gray-500">{DoctorObj.others}</Text>
@@ -85,11 +85,11 @@ export default function Doctor() {
       </ScrollView>
 
       <View
-        className="flex items-center flex-row justify-between px-4 absolute bottom-0 left-0 w-full bg-white border-t border-blue-200"
+        className="flex items-center flex-row justify-between px-4 absolute bottom-0 left-0 w-full bg-white border-t border-aloha-200"
         style={{ height: 80 }}
       >
         <View className="flex justify-between py-2">
-          <Text className="text-blue-500 text-lg font-bold">$25 USD</Text>
+          <Text className="text-aloha-500 text-lg font-bold">$25 USD</Text>
           <Text className="text-md text-gray-500">Appointment Fee</Text>
         </View>
         <CustomButton

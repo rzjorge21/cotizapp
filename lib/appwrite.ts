@@ -212,7 +212,7 @@ export async function getAllPosts() {
     return [
       {
         title: 'Coco1',
-        thumbnail: 'https://marketplace.canva.com/EAFf5rfnPgA/1/0/1600w/canva-blue-modern-eye-catching-vlog-youtube-thumbnail-LEcp-BYepDU.jpg',
+        thumbnail: 'https://marketplace.canva.com/EAFf5rfnPgA/1/0/1600w/canva-aloha-modern-eye-catching-vlog-youtube-thumbnail-LEcp-BYepDU.jpg',
         video: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
         creator: {
           username: 'coco',
@@ -272,7 +272,7 @@ export async function getLatestPosts() {
       [
         {
           title: 'Coco1',
-          thumbnail: 'https://marketplace.canva.com/EAFf5rfnPgA/1/0/1600w/canva-blue-modern-eye-catching-vlog-youtube-thumbnail-LEcp-BYepDU.jpg',
+          thumbnail: 'https://marketplace.canva.com/EAFf5rfnPgA/1/0/1600w/canva-aloha-modern-eye-catching-vlog-youtube-thumbnail-LEcp-BYepDU.jpg',
           video: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
           creator: {
             username: 'coco',

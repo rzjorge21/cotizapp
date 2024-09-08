@@ -65,13 +65,13 @@ export default function Appointment() {
   }
 
   return (
-    <SafeAreaView className="bg-[#f7f7ff] min-h-full block">
+    <SafeAreaView className="bg-[#fff7fe] min-h-full block">
       <CustomHeader
         title="Select Time Slots"
         otherStyles="my-2 px-4"
         rightElement={
-          <Pressable className="rounded-full w-11 h-11 border-blue-200 bg-white border-2 flex justify-center items-center">
-            <Feather name="bell" size={24} color="#3b82f6" />
+          <Pressable className="rounded-full w-11 h-11 border-aloha-200 bg-white border-2 flex justify-center items-center">
+            <Feather name="bell" size={24} color="#d45f77" />
           </Pressable>
         }
       />
@@ -91,7 +91,7 @@ export default function Appointment() {
       </ScrollView>
 
       <View
-        className="flex items-center flex-row px-4 absolute bottom-0 left-0 w-full bg-white border-t border-blue-200"
+        className="flex items-center flex-row px-4 absolute bottom-0 left-0 w-full bg-white border-t border-aloha-200"
         style={{ height: 80 }}
       >
         <CustomButton containerStyles="w-full" handlePress={onConfirm} title="Confirm" />

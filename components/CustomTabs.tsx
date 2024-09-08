@@ -56,7 +56,7 @@ const Tabs = ({ details }: TabsProps) => {
               style={[
                 styles.tabText,
                 {
-                  color: activeTab === index ? '#3b82f6' : '#6b7280',
+                  color: activeTab === index ? '#d45f77' : '#6b7280',
                   marginBottom: activeTab === index ? 0 : 10
                 },
               ]}
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   },
   activeTabIndicator: {
     height: 2,
-    backgroundColor: '#3b82f6',
+    backgroundColor: '#d45f77',
     marginTop: 10,
     width: '100%',
   },

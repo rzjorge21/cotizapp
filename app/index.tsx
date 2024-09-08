@@ -7,7 +7,6 @@ import { images } from "../constants";
 import CustomButton from "../components/CustomButton";
 
 const App = () => {
-
   // const {isLoading, isLoggedIn} = useGlobalContext()
 
   // if (!isLoading && isLoggedIn) return <Redirect href="/home" />;
@@ -17,39 +16,34 @@ const App = () => {
       <ScrollView contentContainerStyle={{ height: "100%" }}>
         <View className="w-full justify-center items-center min-h-[85vh] px-4">
           <Image
-            source={images.logo}
-            className="w-[130px] h-[84px]"
-            resizeMode="contain"
-          />
-
-          <Image
-            source={images.cards}
+            source={images.splash}
             className="max-w-[380px] w-full h-[300px]"
             resizeMode="contain"
           />
 
-          <View className="relative mt-5">
-            <Text className="text-3xl text-white font-bold text-center">
-              Discover Endless Possibilities with{" "}
-              <Text className="text-secondary-200">Aoura</Text>
+          <View className="relative">
+            <Text className="text-3xl font-bold text-center">
+              Cotiz<Text className="text-aloha-500">App</Text>
             </Text>
-
-            <Image
-              source={images.path}
-              className="w-[136px] h-[15px] absolute -bottom-2 -right-8"
-              resizeMode="contain"
-            />
           </View>
 
-          <Text className="text-sm font-pregular text-gray-100 mt-7 text-center">
-            Where creativity meets innovation: embark on a journey of
-            limitless exploration with Aora
+          <Text className="text-sm text-gray-500 font-medium mt-8 text-center">
+            The app you were waiting for to schedule your appointments
           </Text>
 
+          <View className="my-2"></View>
+
           <CustomButton
-            title="Continue with Email"
-            handlePress={() => router.push('/sign-in')}
+            title="Login"
+            handlePress={() => router.push("/sign-in")}
             containerStyles="w-full mt-7"
+          />
+
+          <CustomButton
+            title="Sign Up"
+            handlePress={() => router.push("/sign-up")}
+            containerStyles="w-full mt-7 bg-white border-2 border-aloha-500 text-black"
+            textStyles="text-aloha-500"
           />
         </View>
       </ScrollView>

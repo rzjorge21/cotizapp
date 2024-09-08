@@ -30,8 +30,8 @@ const Header = () => (
       <Text className="text-gray-500">Find a doctor easily</Text>
     </View>
     <View className="ml-auto">
-      <Pressable className="rounded-full w-12 h-12 border-blue-200 bg-white border-2 flex justify-center items-center">
-        <Feather name="bell" size={24} color="#3b82f6" />
+      <Pressable className="rounded-full w-12 h-12 border-aloha-200 bg-white border-2 flex justify-center items-center">
+        <Feather name="bell" size={24} color="#d45f77" />
       </Pressable>
     </View>
   </View>
@@ -41,14 +41,14 @@ const Home = () => {
   const [form, setForm] = useState({ query: "" });
 
   return (
-    <SafeAreaView className="bg-[#f7f7ff] min-h-screen">
+    <SafeAreaView className="bg-[#fff7fe] min-h-screen">
       <ScrollView className="p-4">
         <Header />
 
         <CustomInput
           handleChangeText={(e) => setForm({ ...form, query: e })}
           value={form.query}
-          icon={<Feather name="search" size={24} color="#3b82f6" />}
+          icon={<Feather name="search" size={24} color="#d45f77" />}
           placeholder="Search Doctors"
           otherStyles="my-2"
         />
@@ -57,7 +57,7 @@ const Home = () => {
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             {DepartmentData.map((item: any, idx) => (
               <TouchableOpacity className="mr-4 items-center" key={idx}>
-                <View className="justify-center items-center w-16 h-16 bg-blue-500 rounded-full">
+                <View className="justify-center items-center w-16 h-16 bg-aloha-500 rounded-full">
                   <Feather name={item.icon} size={35} color="white" />
                 </View>
                 <Text className="text-center mt-2">{item.label}</Text>

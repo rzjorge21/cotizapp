@@ -37,12 +37,12 @@ export default function DoctorCard({
           resizeMode="cover"
           style={{ borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
         />
-        <TouchableOpacity className="absolute top-2 right-2 rounded-full w-8 h-8 bg-blue-400 flex justify-center items-center">
+        <TouchableOpacity className="absolute top-2 right-2 rounded-full w-8 h-8 bg-aloha-500 flex justify-center items-center">
           <Feather name="heart" size={15} color="white" />
         </TouchableOpacity>
       </View>
       <Text className="font-psemibold">Dr. {name}</Text>
-      <Text className="text-blue-500 text-xs">{specialist}</Text>
+      <Text className="text-aloha-500 text-xs">{specialist}</Text>
       <Text className="text-gray-500 text-xs">{others}</Text>
       <Rating rating={rating} reviews={reviews} />
     </TouchableOpacity>

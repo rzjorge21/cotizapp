@@ -19,7 +19,7 @@ export default function CustomInput({
 }: Props) {
   return (
     <View
-      className={`border-blue-200 border-2 w-full h-12 px-4 rounded-lg focus:border-blue-500 items-center
+      className={`border-aloha-200 border-2 w-full h-12 px-4 rounded-lg focus:border-aloha-500 items-center
         flex-row ${otherStyles}`}
         >
           <TextInput

@@ -11,7 +11,7 @@ export default function SettingsLayout() {
       </Stack>
 
       {/* <Loader isLoading={loading} /> */}
-      <StatusBar backgroundColor="#f7f7ff" style="dark" />
+      <StatusBar backgroundColor="#fff7fe" style="dark" />
     </>
   );
 }

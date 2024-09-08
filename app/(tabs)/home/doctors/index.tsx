@@ -9,13 +9,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Doctors() {
   return (
-    <SafeAreaView className="bg-[#f7f7ff] min-h-screen py-2">
+    <SafeAreaView className="bg-[#fff7fe] min-h-screen py-2">
       <CustomHeader
         title="All Doctors"
         otherStyles="my-2 px-4"
         rightElement={
-          <Pressable className="rounded-full w-11 h-11 border-blue-200 bg-white border-2 flex justify-center items-center">
-            <Feather name="bell" size={24} color="#3b82f6" />
+          <Pressable className="rounded-full w-11 h-11 border-aloha-200 bg-white border-2 flex justify-center items-center">
+            <Feather name="bell" size={24} color="#d45f77" />
           </Pressable>
         }
       />

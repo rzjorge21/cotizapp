@@ -19,7 +19,7 @@ const TimeSelector = ({ sections, onSelectTime, selectedTime }: Props) => {
       {sections.map(({ label, times, icon }) => (
         <View key={`${label}-${times}`} className="mb-2">
           <View className="flex-row items-center my-2">
-            <Feather name={icon} size={20} color="#3b82f6" />
+            <Feather name={icon} size={20} color="#d45f77" />
             <Text className="text-lg font-bold mx-2 ">{label}</Text>
           </View>
 
@@ -28,9 +28,9 @@ const TimeSelector = ({ sections, onSelectTime, selectedTime }: Props) => {
               <TouchableOpacity
                 key={index}
                 className={`w-[30%] mx-1 my-1 p-2 py-3 
-                  rounded-xl bg-white border border-blue-200 
+                  rounded-xl bg-white border border-aloha-200 
                   items-center justify-center 
-                  ${selectedTime === `${label}-${time}` ? 'bg-blue-500' : ''}`}
+                  ${selectedTime === `${label}-${time}` ? 'bg-aloha-500' : ''}`}
                 onPress={() => onSelectTime(`${label}-${time}`)}
               >
                 <Text className={`text-sm ${selectedTime === `${label}-${time}` ? 'text-white' : ''}`}>{time}</Text>

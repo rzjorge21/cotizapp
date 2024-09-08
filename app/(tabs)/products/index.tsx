@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 const Products = () => {
   return (
-    <SafeAreaView className="bg-[#f7f7ff] min-h-screen">
+    <SafeAreaView className="bg-[#fff7fe] min-h-screen">
       <ScrollView className="p-4">
         <Text>Product</Text>
       </ScrollView>

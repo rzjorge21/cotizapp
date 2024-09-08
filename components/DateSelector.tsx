@@ -20,7 +20,7 @@ const DateSelector = ({
   containerStyles,
 }: Props) => {
   return (
-    <View className={`py-3 border-b border-b-blue-200 ${containerStyles}`}>
+    <View className={`py-3 border-b border-b-aloha-200 ${containerStyles}`}>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -34,8 +34,8 @@ const DateSelector = ({
               key={index}
               className={`items-center justify-center mx-1 w-14 h-20 border rounded-full ${
                 isSelected
-                  ? "border-blue-500 bg-blue-500"
-                  : "border-blue-200 bg-white"
+                  ? "border-aloha-500 bg-aloha-500"
+                  : "border-aloha-200 bg-white"
               }`}
               onPress={() => onSelectDate(date.number)}
             >
