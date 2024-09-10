@@ -5,16 +5,24 @@ import { Tabs } from "expo-router";
 import { icons } from "../../constants";
 import CustomTabBar from "../../components/CustomTabBar";
 
+// const LegacyTabIcon = ({ icon, color, name, focused }: any) => {
+//   return (
+//     <View className="items-center justify-center gap-2">
+//       <Feather name={icon} size={24} color={color} />
+//       <Text
+//         className={`${focused ? "font-psemibold" : "font-pregular"} text-xs`}
+//         style={{ color: color }}
+//       >
+//         {name}
+//       </Text>
+//     </View>
+//   );
+// };
+
 const TabIcon = ({ icon, color, name, focused }: any) => {
   return (
-    <View className="items-center justify-center gap-2">
-      <Feather name={icon} size={24} color={color} />
-      <Text
-        className={`${focused ? "font-psemibold" : "font-pregular"} text-xs`}
-        style={{color: color}}
-      >
-        {name}
-      </Text>
+    <View className="flex items-center justify-center w-12 h-12 rounded-full" style={{backgroundColor: color}}>
+      <Feather name={icon} size={24} color={focused ? "black" : "#888989"} />
     </View>
   );
 };
@@ -25,17 +33,24 @@ const TabsLayout = () => {
       <Tabs
         screenOptions={{
           tabBarShowLabel: false,
-          tabBarActiveTintColor: '#d45f77',
-          tabBarInactiveTintColor: "#9CA3AF",
+          tabBarActiveTintColor: "#d45f77",
+          tabBarInactiveTintColor: "#19191A",
           tabBarStyle: {
-            backgroundColor: "#fff",
-            borderTopWidth: 1,
-            borderTopColor: "#fff",
-            height: 60
-          }
+            position: "absolute",
+            backgroundColor: "#1E1F1F",
+            borderRadius: 999,
+            borderTopWidth: 0,
+            bottom: 12,
+            height: 54,
+            paddingHorizontal: 2,
+            width: 200,
+            left: "50%",  
+            transform: [{ translateX: -100 }],
+            alignSelf: "center",
+          },
         }}
         tabBar={(props) => {
-          return <CustomTabBar {...props}/>
+          return <CustomTabBar {...props} />;
         }}
       >
         <Tabs.Screen
@@ -47,7 +62,7 @@ const TabsLayout = () => {
               <TabIcon
                 icon={"home"}
                 color={color}
-                name={"Home"}
+                // name={"Home"}
                 focused={focused}
               />
             ),
@@ -62,7 +77,7 @@ const TabsLayout = () => {
               <TabIcon
                 icon={"user"}
                 color={color}
-                name={"Clients"}
+                // name={"Clients"}
                 focused={focused}
               />
             ),
@@ -77,7 +92,7 @@ const TabsLayout = () => {
               <TabIcon
                 icon={"box"}
                 color={color}
-                name={"Producs"}
+                // name={"Producs"}
                 focused={focused}
               />
             ),
@@ -92,7 +107,7 @@ const TabsLayout = () => {
               <TabIcon
                 icon={"settings"}
                 color={color}
-                name={"Settings"}
+                // name={"Settings"}
                 focused={focused}
               />
             ),
