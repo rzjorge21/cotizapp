@@ -48,8 +48,24 @@ const Home = () => {
     { id: 2, text: "Finalizados" },
   ];
 
+  const quots = [
+    { id: 0, code: "DUW7JG", price: "340.0", date: "06/09/24", state: 0 },
+    { id: 1, code: "56BNA2", price: "160.0", date: "03/09/24", state: 1 },
+    { id: 2, code: "DUW7JG", price: "340.0", date: "06/09/24", state: 1 },
+    { id: 3, code: "56BNA2", price: "160.0", date: "03/09/24", state: 1 },
+  ];
+
+  const [filteredQuots, setFilteredQuots] = useState(quots);
+
   const handleChipClick = (id: number) => {
     setChoiceChip(id);
+    if (id == 0) {
+      setFilteredQuots(quots)
+    } else if (id == 1) {
+      setFilteredQuots(quots.filter((element) => { return element.state == 0 }))
+    } else {
+      setFilteredQuots(quots.filter((element) => { return element.state == 1 }))
+    }
   };
 
   return (
@@ -80,6 +96,39 @@ const Home = () => {
             );
           })}
         </View>
+
+        <View className="my-2"></View>
+
+        {filteredQuots.map((element) => {
+          return (
+            <View
+              key={element.id}
+              className="flex flex-row justify-between w-full bg-white rounded-full h-16 p-1 my-0.5"
+            >
+              <View className="flex flex-row">
+                <View className="flex items-center justify-center h-full aspect-square bg-aloha-100 rounded-full">
+                  <Text className="text-2xl">A</Text>
+                </View>
+                <View className="flex justify-center">
+                  <Text className="ml-2 text-lg"># {element.code}</Text>
+                </View>
+              </View>
+              <View className="flex flex-row items-center">
+                <View className="flex flex-col mr-2">
+                  <Text className="text-right text-xl">{element.price}</Text>
+                  <Text className="text-right text-sm">{element.date}</Text>
+                </View>
+                <View
+                  className={
+                    element.state == 0
+                      ? "h-full aspect-[1/2] bg-aloha-300 rounded-r-full"
+                      : "h-full aspect-[1/2] bg-aloha-400 rounded-r-full"
+                  }
+                />
+              </View>
+            </View>
+          );
+        })}
 
         {/* 
         <CustomInput
