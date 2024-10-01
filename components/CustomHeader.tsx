@@ -18,12 +18,13 @@ export default function CustomHeader({
     <View className={`flex flex-row items-center ${otherStyles}`}>
       <View className="mr-auto">
         <Pressable
-          className="rounded-full w-11 h-11 border-aloha-200 bg-white border-2 flex justify-center items-center"
+          className="rounded-full w-11 h-11 bg-white flex justify-center items-center"
           onPress={() => {
             router.back();
           }}
         >
-          <Feather name="chevron-left" size={24} color="#d45f77" />
+          <Feather name="chevron-left" size={20} color="black" />
+          {/* <Feather name="chevron-left" size={24} color="#d45f77" /> */}
         </Pressable>
       </View>
       <View className="flex-1">

@@ -2,9 +2,6 @@ import { View, Text, Pressable, ScrollView, Image, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import { Feather } from "@expo/vector-icons";
-// import { DoctorData } from "../../../../../constants/DataDummy";
-// import CustomButton from "../../../../../components/CustomButton";
-// import CustomTabs from "../../../../../components/CustomTabs";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
 import CustomHeader from "@/components/CustomHeader";
@@ -13,9 +10,8 @@ import {
   TextInput,
 } from "react-native-gesture-handler";
 import { ClientData } from "@/constants/DataDummy";
-// import CustomStat from "../../../../../components/CustomStats";
 
-export default function Doctor() {
+export default function Client() {
   const { clientId = 0 } = useLocalSearchParams();
 
   const [clientObj, setClientObj] = useState<object | null>(null);
@@ -62,12 +58,14 @@ export default function Doctor() {
 
   return (
     <GestureHandlerRootView>
-      <SafeAreaView className="bg-[#fff7fe] min-h-full p-4 relative">
+      <SafeAreaView className="min-h-full p-4 relative">
+      {/* <SafeAreaView className="bg-[#fff7fe] min-h-full p-4 relative"> */}
         <CustomHeader
           rightElement={
             <View className="flex flex-row gap-2">
-              <Pressable className="rounded-full w-11 h-11 border-aloha-200 bg-white border-2 flex justify-center items-center">
-                <Feather name="download" size={24} color="#d45f77" />
+              <Pressable className="rounded-full w-11 h-11 bg-white flex justify-center items-center">
+                <Feather name="file-plus" size={20} color="black" />
+                {/* <Feather name="download" size={24} color="#d45f77" /> */}
               </Pressable>
             </View>
           }

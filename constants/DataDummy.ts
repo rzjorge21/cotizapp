@@ -8,6 +8,13 @@ export const ClientData = [
   { id: 4, name: "Edu", purchases: "04", value: "300.00", phoneNumber: "987654321", imageUri: null },
 ];
 
+export const QuotsData = [
+  { id: 0, code: "DUW7JG", price: "340.0", date: "06/09/24", state: 0, clientId: 0 },
+  { id: 1, code: "56BNA2", price: "160.0", date: "03/09/24", state: 1, clientId: 1 },
+  { id: 2, code: "DUW7JG", price: "340.0", date: "06/09/24", state: 1, clientId: 2 },
+  { id: 3, code: "56BNA2", price: "160.0", date: "03/09/24", state: 1, clientId: 3 },
+];
+
 export const DepartmentData = [
   {
     label: "Cardiology",

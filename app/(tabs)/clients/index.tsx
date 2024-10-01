@@ -16,16 +16,16 @@ const Header = ({ handleCreateClient }: { handleCreateClient: () => void }) => (
     <Text className="text-2xl font-pbold">Clientes</Text>
 
     <View className="flex flex-row ml-auto">
-      <Pressable className="mr-2 rounded-full w-12 h-12 border-aloha-200 bg-white border-2 flex justify-center items-center">
-        <Feather name="download" size={24} color="#d45f77" />
+      <Pressable className="mr-2 rounded-full w-12 h-12 bg-white flex justify-center items-center">
+        <Feather name="download" size={20} color="black" />
       </Pressable>
       <Pressable
         onPress={() => {
           handleCreateClient();
         }}
-        className="rounded-full w-12 h-12 border-aloha-200 bg-white border-2 flex justify-center items-center"
+        className="rounded-full w-12 h-12 bg-white flex justify-center items-center"
       >
-        <Feather name="plus" size={24} color="#d45f77" />
+        <Feather name="plus" size={20} color="black" />
       </Pressable>
     </View>
   </View>
@@ -49,7 +49,7 @@ const Clients = () => {
   };
 
   return (
-    <SafeAreaView className="bg-[#fff7fe] min-h-screen">
+    <SafeAreaView className="min-h-screen">
       <ScrollView className="p-4">
         <Header handleCreateClient={handleCreateClient} />
         <View className="flex flex-wrap flex-row w-full justify-between">
