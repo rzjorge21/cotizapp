@@ -12,11 +12,13 @@ import {
   GestureHandlerRootView,
   TextInput,
 } from "react-native-gesture-handler";
+import { ClientData } from "@/constants/DataDummy";
 // import CustomStat from "../../../../../components/CustomStats";
 
 export default function Doctor() {
   const { clientId = 0 } = useLocalSearchParams();
 
+  const [clientObj, setClientObj] = useState<object | null>(null);
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -45,15 +47,17 @@ export default function Doctor() {
   };
 
   const handleCreateUser = () => {
-    // Logic to add a card
+    router.back();
   };
 
   useEffect(() => {
-    // const doctorObj = DoctorData.find((item) => item.id.toString() == doctorId);
-    // if (doctorObj) {
-    //   setDoctorObj(doctorObj);
-    //   setTabContent(doctorObj.details);
-    // }
+    const temp = ClientData.find((item) => item.id.toString() == clientId);
+    if (temp) {
+      setClientObj(temp);
+      setName(temp.name);
+      setPhoneNumber(temp.phoneNumber);
+      setSelectedImage(temp.imageUri)
+    }
   }, []);
 
   return (
@@ -70,8 +74,11 @@ export default function Doctor() {
         />
 
         <View className="py-2" />
-
-        <Text className="text-2xl font-pbold">Agregar un cliente</Text>
+        {clientObj ? (
+          <Text className="text-2xl font-pbold">Editar un cliente</Text>
+        ) : (
+          <Text className="text-2xl font-pbold">Agregar un cliente</Text>
+        )}
 
         <View className="py-2" />
 
@@ -100,15 +107,15 @@ export default function Doctor() {
         <View className="flex items-center mt-5">
           <Pressable
             onPress={handleAddPhoto}
-            className="bg-white w-40 h-40 rounded-full flex items-center justify-center"
+            className="bg-white w-36 h-36 rounded-full flex items-center justify-center"
           >
             {selectedImage ? (
               <Image
                 source={{ uri: selectedImage }}
-                className="w-40 h-40 rounded-full"
+                className="w-36 h-36 rounded-full"
               />
             ) : (
-              <Text className="text-black text-2xl">+</Text>
+              <Text className="text-black text-xl">+</Text>
             )}
           </Pressable>
         </View>
