@@ -1,33 +1,31 @@
-import { View, Text, Image } from "react-native";
+import { View } from "react-native";
 import React from "react";
 import { Feather } from "@expo/vector-icons";
-import { Tabs } from "expo-router";
-import { icons } from "../../constants";
+import { Redirect, Tabs } from "expo-router";
 import CustomTabBar from "../../components/CustomTabBar";
+import { useAuthStore } from "../../store/authStore";
+import { StatusBar } from "expo-status-bar";
 
-// const LegacyTabIcon = ({ icon, color, name, focused }: any) => {
-//   return (
-//     <View className="items-center justify-center gap-2">
-//       <Feather name={icon} size={24} color={color} />
-//       <Text
-//         className={`${focused ? "font-psemibold" : "font-pregular"} text-xs`}
-//         style={{ color: color }}
-//       >
-//         {name}
-//       </Text>
-//     </View>
-//   );
-// };
 
 const TabIcon = ({ icon, color, name, focused }: any) => {
   return (
-    <View className="flex items-center justify-center w-12 h-12 rounded-full" style={{backgroundColor: color}}>
+    <View
+      className="flex items-center justify-center w-12 h-12 rounded-full"
+      style={{ backgroundColor: color }}
+    >
       <Feather name={icon} size={24} color={focused ? "black" : "#888989"} />
     </View>
   );
 };
 
 const TabsLayout = () => {
+  const { isLoggedIn } = useAuthStore();
+
+  // Todo el Tab está protegido
+  if (!isLoggedIn) {
+    return <Redirect href={"/sign-in"} />;
+  }
+
   return (
     <>
       <Tabs
@@ -44,7 +42,7 @@ const TabsLayout = () => {
             height: 54,
             paddingHorizontal: 2,
             width: 200,
-            left: "50%",  
+            left: "50%",
             transform: [{ translateX: -100 }],
             alignSelf: "center",
           },
@@ -114,6 +112,9 @@ const TabsLayout = () => {
           }}
         />
       </Tabs>
+
+      {/* BARRA DE ESTADO */}
+      <StatusBar backgroundColor="#f7f7ff" style="dark" />
     </>
   );
 };

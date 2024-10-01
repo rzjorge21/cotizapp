@@ -7,11 +7,7 @@ export default function ProductLayout() {
     <>
       <Stack initialRouteName="index">
         <Stack.Screen name="index" options={{ headerShown: false }} />
-        {/* <Stack.Screen name="products" options={{ headerShown: false }} /> */}
       </Stack>
-
-      {/* <Loader isLoading={loading} /> */}
-      <StatusBar backgroundColor="#fff7fe" style="dark" />
     </>
   );
 }

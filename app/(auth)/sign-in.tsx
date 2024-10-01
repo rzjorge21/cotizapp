@@ -1,48 +1,38 @@
-import { View, Text, ScrollView, Image, Alert } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, ScrollView, Image, Alert } from "react-native";
+import React, { useState } from "react";
 
-import CustomButton from '../../components/CustomButton';
-import { Link, router } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import CustomInput from '../../components/CustomInput';
+import CustomButton from "../../components/CustomButton";
+import { Link, router } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
+import CustomInput from "../../components/CustomInput";
+import { useAuthStore } from "../../store/authStore";
 
 const SignIn = () => {
-  
-  // const { setUser, setIsLogged } = useGlobalContext();
-  
-  const [form, setForm] = useState({
-    email: '',
-    password: ''
-  })
+  const { login } = useAuthStore();
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const submit = () => {
-    if (form.email === "" || form.password === "") {
-      Alert.alert("Error", "Please fill in all fields");
-    }
-
     setIsSubmitting(true);
 
     try {
-      // await signIn(form.email, form.password);
-      // const result = await getCurrentUser();
-      // setUser(result);
-      // setIsLogged(true);
-
-      Alert.alert("Success", "User signed in successfully");
+      login();
       router.replace("/home");
     } catch (error: any) {
-      Alert.alert("Error", error.message);
     } finally {
       setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <SafeAreaView className="bg-white h-full">
       <ScrollView>
-      <View className="w-full justify-center min-h-[85vh] h-full px-4 my-6">
+        <View className="w-full justify-center min-h-[85vh] h-full px-4 my-6">
           <Text className="text-4xl font-bold text-center">
             Cotiz<Text className="text-aloha-500">App</Text>
           </Text>
@@ -87,7 +77,7 @@ const SignIn = () => {
         </View>
       </ScrollView>
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default SignIn
+export default SignIn;

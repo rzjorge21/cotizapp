@@ -1,9 +1,9 @@
 import React from "react";
 import { BottomTabBar, BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import { useCustomTabBar } from "../context/CustomTabBarContext";
+import { useUIStore } from "../store/uiStore";
 
 const CustomTabBar: React.FC<BottomTabBarProps> = (props: BottomTabBarProps) => {
-  const { isTabBarVisible } = useCustomTabBar();
+  const { isTabBarVisible } = useUIStore()
 
   if (!isTabBarVisible) {
     return null;

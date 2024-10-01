@@ -1,17 +1,19 @@
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
-import GlobalProvider from '../context/GlobalProvider';
-import { CustomTabBarProvider } from '../context/CustomTabBarContext';
-import Toast from 'react-native-toast-message';
-
+import { useFonts } from "expo-font";
+import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect } from "react";
+import "react-native-reanimated";
+import Toast from "react-native-toast-message";
+import { useLoadingStore } from "../store/loadingStore";
+import { StatusBar } from "expo-status-bar";
+import CustomLoading from "../components/CustomLoading";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const { isLoading } = useLoadingStore();
+
   const [fontsLoaded, error] = useFonts({
     "Poppins-Black": require("../assets/fonts/Poppins-Black.ttf"),
     "Poppins-Bold": require("../assets/fonts/Poppins-Bold.ttf"),
@@ -41,19 +43,25 @@ export default function RootLayout() {
   }
 
   return (
-    <GlobalProvider>
-      <CustomTabBarProvider>
-        <Stack>
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-          {/* <Stack.Screen name="search/[query]" options={{ headerShown: false }} /> */}
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        
-        {/* Put Toast always in the end */}
-        <Toast />
-      </CustomTabBarProvider>
-    </GlobalProvider>
+    <>
+      <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        {/* <Stack.Screen name="search/[query]" options={{ headerShown: false }} /> */}
+        <Stack.Screen name="+not-found" />
+      </Stack>
+
+      {/* Componentes que van a ser utilizados por toda la aplicación */}
+
+      {/* LOADER */}
+      <CustomLoading visible={isLoading} />
+
+      {/* BARRA DE ESTADO */}
+      <StatusBar backgroundColor="#f7f7ff" style="dark" />
+
+      {/* TOAST: siempre que vaya al final */}
+      <Toast />
+    </>
   );
 }

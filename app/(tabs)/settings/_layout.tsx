@@ -7,11 +7,7 @@ export default function SettingsLayout() {
     <>
       <Stack initialRouteName="index">
         <Stack.Screen name="index" options={{ headerShown: false }} />
-        {/* <Stack.Screen name="settings" options={{ headerShown: false }} /> */}
       </Stack>
-
-      {/* <Loader isLoading={loading} /> */}
-      <StatusBar backgroundColor="#fff7fe" style="dark" />
     </>
   );
 }

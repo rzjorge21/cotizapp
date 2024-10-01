@@ -1,17 +1,15 @@
 import React, { useEffect } from "react";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useCustomTabBar } from "../../../../context/CustomTabBarContext";
+import { useUIStore } from "../../../../store/uiStore";
 
 export default function DoctorLayout() {
-  const { hideTabBar, showTabBar } = useCustomTabBar();
+  const {showTabBar, hideTabBar} = useUIStore()
 
   useEffect(() => {
     hideTabBar();
 
-    return () => {
-      showTabBar();
-    };
+    return () => { showTabBar() };
   }, []);
   return (
     <>
