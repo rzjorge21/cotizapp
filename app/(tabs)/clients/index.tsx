@@ -8,6 +8,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
+import { router } from "expo-router";
 
 const Header = () => (
   <View className="flex flex-row items-center my-2">
@@ -51,7 +52,13 @@ const Clients = () => {
         <View className="flex flex-wrap flex-row w-full justify-between">
           {clients.map((element) => {
             return (
-              <Pressable key={element.id} className="flex flex-col rounded-[32px] bg-white w-[48%] mb-4 p-4">
+              <Pressable
+                key={element.id}
+                className="flex flex-col rounded-[32px] bg-white w-[48%] mb-4 p-4"
+                onPress={()=>{
+                  router.push({pathname: '/(tabs)/clients/[clientId]', params:{ clientId: element.id}});
+              }}
+              >
                 <View className="flex flex-row items-center">
                   <View className="flex items-center justify-center h-14 aspect-square bg-aloha-100 rounded-full">
                     <Text className="text-2xl">{element.name[0]}</Text>

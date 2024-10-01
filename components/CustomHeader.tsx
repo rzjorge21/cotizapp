@@ -4,13 +4,16 @@ import { router } from "expo-router";
 import { Feather } from "@expo/vector-icons";
 
 type Props = {
-  title: string;
-  rightElement?: React.ReactNode
+  title?: string;
+  rightElement?: React.ReactNode;
   otherStyles?: string;
 };
 
-
-export default function CustomHeader({title, rightElement, otherStyles}: Props) {
+export default function CustomHeader({
+  title,
+  rightElement,
+  otherStyles,
+}: Props) {
   return (
     <View className={`flex flex-row items-center ${otherStyles}`}>
       <View className="mr-auto">
@@ -24,11 +27,9 @@ export default function CustomHeader({title, rightElement, otherStyles}: Props) 
         </Pressable>
       </View>
       <View className="flex-1">
-        <Text className="text-xl text-center">{title}</Text>
+        <Text className="text-xl text-center">{title ? title : ""}</Text>
       </View>
-      <View className="w-11 h-11">
-        {rightElement}
-      </View>
+      <View className="mr-auto h-11">{rightElement}</View>
     </View>
   );
 }
