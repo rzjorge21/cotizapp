@@ -39,7 +39,7 @@ const Header = () => (
 );
 
 const Home = () => {
-  const [form, setForm] = useState({ query: "" });
+  // const [form, setForm] = useState({ query: "" });
 
   const [choiceChip, setChoiceChip] = useState(0);
   const chips = [
