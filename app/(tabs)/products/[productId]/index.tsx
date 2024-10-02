@@ -111,7 +111,10 @@ export default function Client() {
             keyboardType="phone-pad"
           />
         </View>
-
+        
+        <View className="h-4 flex w-full items-center justify-center">
+          <View className="h-0.5 bg-black w-8"></View>
+        </View>
         {/* Image Picker */}
         <View className="flex items-center mt-5">
           <TouchableOpacity

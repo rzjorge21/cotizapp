@@ -17,6 +17,7 @@ export default function QuotLayout() {
     <>
       <Stack initialRouteName="index">
         <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="add-product" options={{ headerShown: false }} />
       </Stack>
     </>
   );

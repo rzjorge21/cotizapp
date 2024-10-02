@@ -32,6 +32,12 @@ export default function Quot() {
     router.back();
   };
 
+  const handleCreateProduct = () => {
+    router.push({
+      pathname: `/(tabs)/home/${quotId}/add-product`,
+    });
+  };
+
   useEffect(() => {
     const temp = QuotsData.find((item) => item.id.toString() == quotId);
     if (temp) {
@@ -163,9 +169,18 @@ export default function Quot() {
           <View className="mb-2" />
         </TouchableOpacity>
 
-        <TouchableOpacity className="flex items-center justify-center bg-black h-14 rounded-full mb-2">
-          <Text className="text-base text-white">Product (+)</Text>
-        </TouchableOpacity>
+        {quotObj && state == 1 ? (
+          <></>
+        ) : (
+          <TouchableOpacity
+            onPress={() => {
+              handleCreateProduct();
+            }}
+            className="flex items-center justify-center bg-black h-14 rounded-full mb-2"
+          >
+            <Text className="text-base text-white">Producto (+)</Text>
+          </TouchableOpacity>
+        )}
 
         {/* <View className="mb-4">
           <TextInput
