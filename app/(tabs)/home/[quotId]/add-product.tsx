@@ -22,7 +22,7 @@ export default function Quot() {
 
   const products = ProductsData;
   const [selectedProduct, setSelectedProduct] = useState<number | null>(null);
-  const [quantity, setQuantity] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState<string>("");
 
   const handleCreateQuot = () => {
     router.back();
