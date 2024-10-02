@@ -15,6 +15,11 @@ export const QuotsData = [
   { id: 3, code: "56BNA2", price: "160.0", date: "03/09/24", state: 1, clientId: 3 },
 ];
 
+export const QuotsStateData = [
+  { id: 0, state: 0, name: "Cotizado"},
+  { id: 1, state: 1, name: "Finalizado"},
+]
+
 export const DepartmentData = [
   {
     label: "Cardiology",
