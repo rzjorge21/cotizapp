@@ -10,49 +10,13 @@ import { useAuthStore } from "../store/authStore";
 import { DemoServices } from "../services";
 import { ShowInfo } from "../utils/toast";
 import { IS_DEMO } from "../config";
+import CustomDemo from "../components/CustomDemo";
 
 const App = () => {
-  const { showLoading, hideLoading } = useLoadingStore();
-  const { login, logout, isLoggedIn } = useAuthStore();
-
-  const getRandomQuote = async () => {
-    try {
-      showLoading();
-      const data = await DemoServices.RandomFact();
-      ShowInfo(data.fact);
-    } catch (error) {
-      console.log("ERROR", error);
-    } finally {
-      hideLoading();
-    }
-  };
 
   if (IS_DEMO) {
     return (
-      <SafeAreaView className="bg-[#f7f7ff] h-full">
-        <ScrollView contentContainerStyle={{ height: "100%" }}>
-          <View className="w-full justify-center items-center min-h-[85vh] px-4">
-            <CustomButton
-              title="Get Random Quote"
-              handlePress={getRandomQuote}
-              containerStyles="w-full mt-7"
-            />
-            
-            <Text className="text-black">{isLoggedIn ? 'logueado' : 'no logueado'}</Text>
-            <CustomButton
-              title="Login"
-              handlePress={login}
-              containerStyles="w-full mt-7"
-            />
-            <CustomButton
-              title="Logout"
-              handlePress={logout}
-              containerStyles="w-full mt-7"
-            />
-
-          </View>
-        </ScrollView>
-      </SafeAreaView>
+      <CustomDemo/>
     );
   }
 
