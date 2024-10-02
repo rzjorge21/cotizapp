@@ -8,7 +8,7 @@ import {
   ScrollView
 } from "react-native";
 import { router } from "expo-router";
-import { ClientData } from "@/constants/DataDummy";
+import { ClientsData } from "@/constants/DataDummy";
 
 const Header = ({ handleCreateClient }: { handleCreateClient: () => void }) => (
   <View className="flex flex-row items-center my-2">
@@ -31,7 +31,7 @@ const Header = ({ handleCreateClient }: { handleCreateClient: () => void }) => (
 );
 
 const Clients = () => {
-  const clients = ClientData;
+  const clients = ClientsData;
 
   const handleCreateClient = () => {
     router.push({

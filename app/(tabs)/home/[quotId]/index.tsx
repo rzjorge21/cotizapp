@@ -16,7 +16,7 @@ import {
   GestureHandlerRootView,
   TextInput,
 } from "react-native-gesture-handler";
-import { ClientData, QuotsData } from "@/constants/DataDummy";
+import { ClientsData, QuotsData } from "@/constants/DataDummy";
 
 export default function Quot() {
   const { quotId = -1 } = useLocalSearchParams();
@@ -25,7 +25,7 @@ export default function Quot() {
   const [code, setCode] = useState("");
   const [state, setState] = useState(0);
 
-  const clients = ClientData;
+  const clients = ClientsData;
   const [selectedClient, setSelectedClient] = useState<number | null>(null);
 
   const handleCreateQuot = () => {
@@ -126,7 +126,7 @@ export default function Quot() {
           <View className="h-0.5 bg-black w-8"></View>
         </View>
 
-        <View className="flex items-center justify-between flex-row bg-white placeholder-black px-4 h-12 rounded-full mb-2">
+        <TouchableOpacity className="flex items-center justify-between flex-row bg-white placeholder-black px-4 h-12 rounded-full mb-2">
           <Text>2 und - Caja de alfajor</Text>
           {quotObj && state == 1 ? (
             <></>
@@ -135,9 +135,9 @@ export default function Quot() {
               <Feather name="trash" size={16} color="white" />
             </TouchableOpacity>
           )}
-        </View>
+        </TouchableOpacity>
 
-        <View className="bg-white placeholder-black px-4 rounded-[32px] mb-2">
+        <TouchableOpacity className="bg-white placeholder-black px-4 rounded-[32px] mb-2">
           <View className="flex items-center justify-between flex-row h-12">
             <Text>1 und - Torta 15 cm</Text>
 
@@ -161,7 +161,7 @@ export default function Quot() {
             <Text>2</Text>
           </View>
           <View className="mb-2" />
-        </View>
+        </TouchableOpacity>
 
         <TouchableOpacity className="flex items-center justify-center bg-black h-14 rounded-full mb-2">
           <Text className="text-base text-white">Product (+)</Text>
