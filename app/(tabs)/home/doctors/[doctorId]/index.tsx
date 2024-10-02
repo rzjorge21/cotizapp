@@ -1,4 +1,4 @@
-import { View, Text, Pressable, ScrollView, Image } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
 import React, { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import CustomHeader from "../../../../../components/CustomHeader";
@@ -29,9 +29,9 @@ export default function Doctor() {
           title="Doctor's Details"
           otherStyles="my-2 px-4"
           rightElement={
-            <Pressable className="rounded-full w-11 h-11 border-aloha-200 bg-white border-2 flex justify-center items-center">
+            <TouchableOpacity className="rounded-full w-11 h-11 border-aloha-200 bg-white border-2 flex justify-center items-center">
               <Feather name="bell" size={24} color="#d45f77" />
-            </Pressable>
+            </TouchableOpacity>
           }
         />
         <Text>Cargando Doctor</Text>
@@ -45,9 +45,9 @@ export default function Doctor() {
         title="Doctor's Details"
         otherStyles="my-2 px-4"
         rightElement={
-          <Pressable className="rounded-full w-11 h-11 border-aloha-200 bg-white border-2 flex justify-center items-center">
+          <TouchableOpacity className="rounded-full w-11 h-11 border-aloha-200 bg-white border-2 flex justify-center items-center">
             <Feather name="bell" size={24} color="#d45f77" />
-          </Pressable>
+          </TouchableOpacity>
         }
       />
 

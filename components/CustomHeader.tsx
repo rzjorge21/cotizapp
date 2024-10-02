@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { router } from "expo-router";
 import { Feather } from "@expo/vector-icons";
@@ -17,7 +17,7 @@ export default function CustomHeader({
   return (
     <View className={`flex flex-row items-center ${otherStyles}`}>
       <View className="mr-auto">
-        <Pressable
+        <TouchableOpacity
           className="rounded-full w-11 h-11 bg-white flex justify-center items-center"
           onPress={() => {
             router.back();
@@ -25,7 +25,7 @@ export default function CustomHeader({
         >
           <Feather name="chevron-left" size={20} color="black" />
           {/* <Feather name="chevron-left" size={24} color="#d45f77" /> */}
-        </Pressable>
+        </TouchableOpacity>
       </View>
       <View className="flex-1">
         <Text className="text-xl text-center">{title ? title : ""}</Text>

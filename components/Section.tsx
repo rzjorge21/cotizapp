@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 
 type Props = {
@@ -21,11 +21,11 @@ export default function Section({
       <View className={`flex-row justify-between items-center ${otherStyles}`}>
         <Text className="text-lg font-pbold">{title}</Text>
         {showSeeAll ? (
-          <Pressable onPress={onSeeAll}>
+          <TouchableOpacity onPress={onSeeAll}>
             <Text className="text-sm font-psemibold text-aloha-500">
               See All
             </Text>
-          </Pressable>
+          </TouchableOpacity>
         ) : (
           <></>
         )}

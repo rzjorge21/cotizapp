@@ -16,14 +16,14 @@ import {
   GestureHandlerRootView,
   TextInput,
 } from "react-native-gesture-handler";
-import { ClientsData } from "@/constants/DataDummy";
+import { ProductsData } from "@/constants/DataDummy";
 
 export default function Client() {
-  const { clientId = 0 } = useLocalSearchParams();
+  const { productId = 0 } = useLocalSearchParams();
 
-  const [clientObj, setClientObj] = useState<object | null>(null);
+  const [productObj, setProductObj] = useState<object | null>(null);
   const [name, setName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [basePrice, setBasePrice] = useState("");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const handleAddPhoto = async () => {
@@ -54,12 +54,12 @@ export default function Client() {
   };
 
   useEffect(() => {
-    const temp = ClientsData.find((item) => item.id.toString() == clientId);
+    const temp = ProductsData.find((item) => item.id.toString() == productId);
     if (temp) {
-      setClientObj(temp);
+      setProductObj(temp);
       setName(temp.name);
-      setPhoneNumber(temp.phoneNumber);
-      setSelectedImage(temp.imageUri);
+      setBasePrice(temp.basePrice);
+      // setSelectedImage(temp.imageUri)
     }
   }, []);
 
@@ -69,12 +69,8 @@ export default function Client() {
         {/* <SafeAreaView className="bg-[#fff7fe] min-h-full p-4 relative"> */}
         <CustomHeader
           rightElement={
-            clientId ? (
+            productObj ? (
               <View className="flex flex-row gap-2">
-                <TouchableOpacity className="rounded-full w-11 h-11 bg-white flex justify-center items-center">
-                  <Feather name="file-plus" size={20} color="black" />
-                  {/* <Feather name="download" size={24} color="#d45f77" /> */}
-                </TouchableOpacity>
                 <TouchableOpacity className="rounded-full w-11 h-11 bg-black flex justify-center items-center">
                   <Feather name="trash" size={20} color="white" />
                   {/* <Feather name="download" size={24} color="#d45f77" /> */}
@@ -87,10 +83,10 @@ export default function Client() {
         />
 
         <View className="py-2" />
-        {clientObj ? (
-          <Text className="text-2xl font-pbold">Editar un cliente</Text>
+        {productObj ? (
+          <Text className="text-2xl font-pbold">Editar un producto</Text>
         ) : (
-          <Text className="text-2xl font-pbold">Agregar un cliente</Text>
+          <Text className="text-2xl font-pbold">Agregar un producto</Text>
         )}
 
         <View className="py-2" />
@@ -110,8 +106,8 @@ export default function Client() {
             className="bg-white text-black placeholder-black p-3 rounded-full"
             placeholder="Teléfono (opcional)"
             placeholderTextColor="gray"
-            value={phoneNumber}
-            onChangeText={setPhoneNumber}
+            value={basePrice}
+            onChangeText={setBasePrice}
             keyboardType="phone-pad"
           />
         </View>

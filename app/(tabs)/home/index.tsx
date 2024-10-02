@@ -1,30 +1,15 @@
 import { Feather } from "@expo/vector-icons";
-import {
-  View,
-  Image,
-  Text,
-  Pressable,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
-import CustomInput from "../../../components/CustomInput";
-import Section from "../../../components/Section";
-import {
-  DepartmentData,
-  DoctorData,
-  QuotsData,
-} from "../../../constants/DataDummy";
-import DoctorCard from "../../../components/DoctorCard";
+import { QuotsData } from "../../../constants/DataDummy";
 import { router } from "expo-router";
-import CustomButton from "../../../components/CustomButton";
 
 const Header = ({ handleCreateQuot }: { handleCreateQuot: () => void }) => (
   <View className="flex flex-row items-center my-2">
     <Text className="text-2xl font-pbold">Quots</Text>
     <View className="ml-auto">
-      <Pressable
+      <TouchableOpacity
         onPress={() => {
           handleCreateQuot();
         }}
@@ -33,7 +18,7 @@ const Header = ({ handleCreateQuot }: { handleCreateQuot: () => void }) => (
       >
         <Feather name="plus" size={20} color="black" />
         {/* <Feather name="plus" size={24} color="#d45f77" /> */}
-      </Pressable>
+      </TouchableOpacity>
     </View>
   </View>
 );
@@ -57,7 +42,7 @@ const Home = () => {
     });
   };
 
-  const handleViewQuot = (id : number) => {
+  const handleViewQuot = (id: number) => {
     router.push({
       pathname: "/(tabs)/home/[quotId]",
       params: { quotId: id },
@@ -92,7 +77,7 @@ const Home = () => {
         <View className="flex flex-row w-full justify-between">
           {chips.map((element) => {
             return (
-              <Pressable
+              <TouchableOpacity
                 key={element.id.toString()}
                 className={
                   choiceChip == element.id
@@ -108,7 +93,7 @@ const Home = () => {
                 >
                   {element.text}
                 </Text>
-              </Pressable>
+              </TouchableOpacity>
             );
           })}
         </View>
@@ -117,8 +102,10 @@ const Home = () => {
 
         {filteredQuots.map((element) => {
           return (
-            <Pressable
-              onPress={() => {handleViewQuot(element.id)}}
+            <TouchableOpacity
+              onPress={() => {
+                handleViewQuot(element.id);
+              }}
               key={element.id}
               className="flex flex-row justify-between w-full bg-white rounded-full h-16 p-1 my-0.5"
             >
@@ -143,7 +130,7 @@ const Home = () => {
                   }
                 />
               </View>
-            </Pressable>
+            </TouchableOpacity>
           );
         })}
         <View className="my-12"></View>
