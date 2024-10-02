@@ -1,4 +1,4 @@
-import { View, Text, Pressable, ScrollView, Image, Alert } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Image, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import { Feather } from "@expo/vector-icons";
@@ -63,10 +63,10 @@ export default function Client() {
         <CustomHeader
           rightElement={
             <View className="flex flex-row gap-2">
-              <Pressable className="rounded-full w-11 h-11 bg-white flex justify-center items-center">
+              <TouchableOpacity className="rounded-full w-11 h-11 bg-white flex justify-center items-center">
                 <Feather name="file-plus" size={20} color="black" />
                 {/* <Feather name="download" size={24} color="#d45f77" /> */}
-              </Pressable>
+              </TouchableOpacity>
             </View>
           }
         />
@@ -103,7 +103,7 @@ export default function Client() {
 
         {/* Image Picker */}
         <View className="flex items-center mt-5">
-          <Pressable
+          <TouchableOpacity
             onPress={handleAddPhoto}
             className="bg-white w-36 h-36 rounded-full flex items-center justify-center"
           >
@@ -115,16 +115,16 @@ export default function Client() {
             ) : (
               <Text className="text-black text-xl">+</Text>
             )}
-          </Pressable>
+          </TouchableOpacity>
         </View>
 
         {/* Save Button */}
         <View className="absolute bottom-0 right-0 p-4">
-          <Pressable onPress={handleCreateUser}>
+          <TouchableOpacity onPress={handleCreateUser}>
             <View className="bg-aloha-400 w-16 h-16 rounded-full flex items-center justify-center">
               <Feather name="save" size={24} color="black" />
             </View>
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     </GestureHandlerRootView>

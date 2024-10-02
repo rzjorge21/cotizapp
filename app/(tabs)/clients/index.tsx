@@ -4,9 +4,8 @@ import {
   View,
   Image,
   Text,
-  Pressable,
-  ScrollView,
   TouchableOpacity,
+  ScrollView
 } from "react-native";
 import { router } from "expo-router";
 import { ClientData } from "@/constants/DataDummy";
@@ -16,17 +15,17 @@ const Header = ({ handleCreateClient }: { handleCreateClient: () => void }) => (
     <Text className="text-2xl font-pbold">Clientes</Text>
 
     <View className="flex flex-row ml-auto">
-      <Pressable className="mr-2 rounded-full w-12 h-12 bg-white flex justify-center items-center">
+      <TouchableOpacity className="mr-2 rounded-full w-12 h-12 bg-white flex justify-center items-center">
         <Feather name="download" size={20} color="black" />
-      </Pressable>
-      <Pressable
+      </TouchableOpacity>
+      <TouchableOpacity
         onPress={() => {
           handleCreateClient();
         }}
         className="rounded-full w-12 h-12 bg-white flex justify-center items-center"
       >
         <Feather name="plus" size={20} color="black" />
-      </Pressable>
+      </TouchableOpacity>
     </View>
   </View>
 );
@@ -55,7 +54,7 @@ const Clients = () => {
         <View className="flex flex-wrap flex-row w-full justify-between">
           {clients.map((element) => {
             return (
-              <Pressable
+              <TouchableOpacity
                 key={element.id}
                 className="flex flex-col rounded-[32px] bg-white w-[48%] mb-4 p-4"
                 onPress={() => {
@@ -90,7 +89,7 @@ const Clients = () => {
                     <Text className="text-xs">Valor</Text>
                   </View>
                 </View>
-              </Pressable>
+              </TouchableOpacity>
             );
           })}
         </View>

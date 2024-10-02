@@ -1,4 +1,4 @@
-import { View, ScrollView, Pressable } from "react-native";
+import { View, ScrollView, TouchableOpacity } from "react-native";
 import React from "react";
 import DoctorCard from "../../../../components/DoctorCard";
 import { Feather } from "@expo/vector-icons";
@@ -14,9 +14,9 @@ export default function Doctors() {
         title="All Doctors"
         otherStyles="my-2 px-4"
         rightElement={
-          <Pressable className="rounded-full w-11 h-11 border-aloha-200 bg-white border-2 flex justify-center items-center">
+          <TouchableOpacity className="rounded-full w-11 h-11 border-aloha-200 bg-white border-2 flex justify-center items-center">
             <Feather name="bell" size={24} color="#d45f77" />
-          </Pressable>
+          </TouchableOpacity>
         }
       />
 

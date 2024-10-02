@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, View } from "react-native";
+import { TouchableOpacity, ScrollView, View } from "react-native";
 import React, { useState } from "react";
 import CustomHeader from "../../../../../components/CustomHeader";
 import { Feather } from "@expo/vector-icons";
@@ -70,9 +70,9 @@ export default function Appointment() {
         title="Select Time Slots"
         otherStyles="my-2 px-4"
         rightElement={
-          <Pressable className="rounded-full w-11 h-11 border-aloha-200 bg-white border-2 flex justify-center items-center">
+          <TouchableOpacity className="rounded-full w-11 h-11 border-aloha-200 bg-white border-2 flex justify-center items-center">
             <Feather name="bell" size={24} color="#d45f77" />
-          </Pressable>
+          </TouchableOpacity>
         }
       />
 

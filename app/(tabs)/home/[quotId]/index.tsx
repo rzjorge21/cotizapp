@@ -1,4 +1,4 @@
-import { View, Text, Pressable, ScrollView, Image, Alert } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Image, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import { Feather } from "@expo/vector-icons";
@@ -39,15 +39,15 @@ export default function Quot() {
         <CustomHeader
           rightElement={
             <View className="flex flex-row gap-2">
-              <Pressable className="rounded-full w-11 h-11 bg-white flex justify-center items-center">
+              <TouchableOpacity className="rounded-full w-11 h-11 bg-white flex justify-center items-center">
                 <Feather name="upload" size={20} color="black" />
-              </Pressable>
-              <Pressable className="rounded-full w-11 h-11 bg-white flex justify-center items-center">
+              </TouchableOpacity>
+              <TouchableOpacity className="rounded-full w-11 h-11 bg-white flex justify-center items-center">
                 <Feather name="share-2" size={20} color="black" />
-              </Pressable>
-              <Pressable className="rounded-full w-11 h-11 bg-black flex justify-center items-center">
+              </TouchableOpacity>
+              <TouchableOpacity className="rounded-full w-11 h-11 bg-black flex justify-center items-center">
                 <Feather name="trash" size={20} color="white" />
-              </Pressable>
+              </TouchableOpacity>
             </View>
           }
         />
@@ -102,17 +102,17 @@ export default function Quot() {
 
         <View className="flex items-center justify-between flex-row bg-white placeholder-black px-3 h-14 rounded-full mb-2">
           <Text className="text-base">2 und - Caja de alfajor</Text>
-          <Pressable className="rounded-full h-7 aspect-square bg-black flex justify-center items-center">
+          <TouchableOpacity className="rounded-full h-7 aspect-square bg-black flex justify-center items-center">
             <Feather name="trash" size={16} color="white" />
-          </Pressable>
+          </TouchableOpacity>
         </View>
 
         <View className="bg-white placeholder-black p-3 rounded-[32px] mb-2">
           <View className="flex items-center justify-between flex-row">
             <Text className="text-base">1 und - Torta 15 cm</Text>
-            <Pressable className="rounded-full h-7 aspect-square bg-black flex justify-center items-center">
+            <TouchableOpacity className="rounded-full h-7 aspect-square bg-black flex justify-center items-center">
               <Feather name="trash" size={16} color="white" />
-            </Pressable>
+            </TouchableOpacity>
           </View>
           <View className="h-4 flex w-full items-center justify-center">
             <View className="h-0.5 bg-black w-8"></View>
@@ -122,6 +122,10 @@ export default function Quot() {
             <Text className="text-base">14</Text>
           </View>
         </View>
+
+        <TouchableOpacity className="flex items-center justify-center bg-black h-14 rounded-full mb-2">
+          <Text className="text-base text-white">Product (+)</Text>
+        </TouchableOpacity>
 
         {/* <View className="mb-4">
           <TextInput
@@ -136,11 +140,16 @@ export default function Quot() {
 
         {/* Save Button */}
         <View className="absolute bottom-0 right-0 p-4">
-          <Pressable onPress={handleCreateQuot}>
+          <TouchableOpacity onPress={handleCreateQuot}>
             <View className="bg-aloha-400 w-16 h-16 rounded-full flex items-center justify-center">
               <Feather name="save" size={24} color="black" />
             </View>
-          </Pressable>
+          </TouchableOpacity>
+        </View>
+
+        {/* Total Price */}
+        <View className="absolute bottom-0 left-0 px-4 py-10">
+          <Text className="text-lg"> Total: S/. 24.00</Text>
         </View>
       </SafeAreaView>
     </GestureHandlerRootView>
