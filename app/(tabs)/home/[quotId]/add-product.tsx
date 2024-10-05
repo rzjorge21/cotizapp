@@ -19,20 +19,23 @@ import {
 import { ProductsData } from "@/constants/DataDummy";
 
 export default function Quot() {
-
   const products = ProductsData;
-  const [selectedProduct, setSelectedProduct] = useState<number | null>(null);
+  const [selectedId, setSelectedId] = useState<number>(0);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [quantity, setQuantity] = useState<string>("");
 
   const handleCreateQuot = () => {
     router.back();
   };
 
+  const handleSelectedProduct = (selectedId: any) => {
+    setSelectedId(selectedId);
+    const temp = ProductsData.find((item) => item.id == selectedId);
+    setSelectedProduct(temp);
+  };
+
   useEffect(() => {
-    // const temp = QuotsData.find((item) => item.id.toString() == quotId);
-    // if (temp) {
-    //     setSelectedProduct(temp.clientId);
-    // }
+    handleSelectedProduct(0);
   }, []);
 
   return (
@@ -48,10 +51,10 @@ export default function Quot() {
 
         <View className="flex justify-center bg-white rounded-full h-12 mb-2">
           <Picker
-            selectedValue={selectedProduct}
-            onValueChange={(itemValue, itemIndex) =>
-              setSelectedProduct(itemValue)
-            }
+            selectedValue={selectedId}
+            onValueChange={(itemValue, itemIndex) => {
+              handleSelectedProduct(itemValue);
+            }}
           >
             {products.map((element) => {
               return (
@@ -80,8 +83,46 @@ export default function Quot() {
           <View className="h-0.5 bg-black w-8"></View>
         </View>
 
-        {/* Save Button */}
+        {selectedProduct?.attributes.map((element: any) => {
+          return (
+            <View
+              key={element}
+              className="flex items-center flex-col bg-white placeholder-black px-4 py-2 rounded-[32px] mb-2"
+            >
+              <View className="flex w-full items-center justify-between flex-row mb-2">
+                <Text className="text-base">Atributo #{element}</Text>
 
+                <TouchableOpacity className="rounded-full h-7 aspect-square bg-black flex justify-center items-center">
+                  <Feather name="trash" size={16} color="white" />
+                </TouchableOpacity>
+              </View>
+              <View className="flex flex-row">
+                <View className="flex flex-1">
+                  <TextInput
+                    className="flex text-black placeholder-black px-4 h-12 rounded-full border border-gray-400 mr-1"
+                    placeholder="Cantidad"
+                    placeholderTextColor="gray"
+                    value={quantity}
+                    onChangeText={setQuantity}
+                    keyboardType="number-pad"
+                  />
+                </View>
+                <View className="flex flex-1">
+                  <TextInput
+                    className="flex text-black placeholder-black px-4 h-12 rounded-full border border-gray-400 ml-1"
+                    placeholder="Multiplicador"
+                    placeholderTextColor="gray"
+                    value={quantity}
+                    onChangeText={setQuantity}
+                    keyboardType="number-pad"
+                  />
+                </View>
+              </View>
+            </View>
+          );
+        })}
+
+        {/* Save Button */}
         <View className="absolute bottom-0 right-0 p-4">
           <TouchableOpacity onPress={handleCreateQuot}>
             <View className="bg-aloha-400 w-16 h-16 rounded-full flex items-center justify-center">
