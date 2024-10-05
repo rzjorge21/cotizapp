@@ -10,7 +10,6 @@ import React, { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import { Feather } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
-import * as ImagePicker from "expo-image-picker";
 import CustomHeader from "@/components/CustomHeader";
 import {
   GestureHandlerRootView,
@@ -26,30 +25,7 @@ export default function Client() {
   const [basePrice, setBasePrice] = useState("");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  const handleAddPhoto = async () => {
-    // Ask for permission to access media library
-    const permissionResult =
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    if (permissionResult.granted === false) {
-      Alert.alert("Permission to access camera roll is required!");
-      return;
-    }
-
-    // Launch the image picker
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setSelectedImage(result.assets[0].uri);
-    }
-  };
-
-  const handleCreateUser = () => {
+  const handleCreateProduct = () => {
     router.back();
   };
 
@@ -104,37 +80,69 @@ export default function Client() {
         <View className="mb-4">
           <TextInput
             className="bg-white text-black placeholder-black p-3 rounded-full"
-            placeholder="Teléfono (opcional)"
+            placeholder="Precio base"
             placeholderTextColor="gray"
             value={basePrice}
             onChangeText={setBasePrice}
             keyboardType="phone-pad"
           />
         </View>
-        
+
         <View className="h-4 flex w-full items-center justify-center">
           <View className="h-0.5 bg-black w-8"></View>
         </View>
-        {/* Image Picker */}
-        <View className="flex items-center mt-5">
-          <TouchableOpacity
-            onPress={handleAddPhoto}
-            className="bg-white w-36 h-36 rounded-full flex items-center justify-center"
-          >
-            {selectedImage ? (
-              <Image
-                source={{ uri: selectedImage }}
-                className="w-36 h-36 rounded-full"
-              />
-            ) : (
-              <Text className="text-black text-xl">+</Text>
-            )}
-          </TouchableOpacity>
-        </View>
+
+        {productObj?.attributes.map((element: any) => {
+          return (
+            <View
+              key={element}
+              className="flex items-center flex-col bg-white placeholder-black px-4 py-2 rounded-[32px] mb-2"
+            >
+              <View className="flex w-full items-center justify-between flex-row mb-2">
+                <Text className="text-base">Atributo #{element}</Text>
+
+                <TouchableOpacity className="rounded-full h-7 aspect-square bg-black flex justify-center items-center">
+                  <Feather name="trash" size={16} color="white" />
+                </TouchableOpacity>
+              </View>
+              <View className="flex flex-row">
+                <View className="flex flex-1">
+                  <TextInput
+                    className="flex text-black placeholder-black px-4 h-12 rounded-full border border-gray-400 mr-1"
+                    placeholder="Cantidad"
+                    placeholderTextColor="gray"
+                    value={name}
+                    onChangeText={setName}
+                    keyboardType="number-pad"
+                  />
+                </View>
+                <View className="flex flex-1">
+                  <TextInput
+                    className="flex text-black placeholder-black px-4 h-12 rounded-full border border-gray-400 ml-1"
+                    placeholder="Multiplicador"
+                    placeholderTextColor="gray"
+                    value={basePrice}
+                    onChangeText={setBasePrice}
+                    keyboardType="number-pad"
+                  />
+                </View>
+              </View>
+            </View>
+          );
+        })}
+
+        <TouchableOpacity
+          onPress={() => {
+            handleCreateProduct();
+          }}
+          className="flex items-center justify-center bg-black h-14 rounded-full mb-2"
+        >
+          <Text className="text-base text-white">Atributo (+)</Text>
+        </TouchableOpacity>
 
         {/* Save Button */}
         <View className="absolute bottom-0 right-0 p-4">
-          <TouchableOpacity onPress={handleCreateUser}>
+          <TouchableOpacity onPress={handleCreateProduct}>
             <View className="bg-aloha-400 w-16 h-16 rounded-full flex items-center justify-center">
               <Feather name="save" size={24} color="black" />
             </View>
