@@ -79,46 +79,26 @@ export default function Quot() {
           />
         </View>
 
-        <View className="h-4 flex w-full items-center justify-center">
-          <View className="h-0.5 bg-black w-8"></View>
-        </View>
+        {selectedProduct?.attributes.length > 0 ? (
+          <View className="h-4 flex w-full items-center justify-center mb-2">
+            <View className="h-0.5 bg-black w-8"></View>
+          </View>
+        ) : (
+          <></>
+        )}
 
         {selectedProduct?.attributes.map((element: any) => {
           return (
-            <View
+            <TextInput
               key={element}
-              className="flex items-center flex-col bg-white placeholder-black px-4 py-2 rounded-[32px] mb-2"
-            >
-              <View className="flex w-full items-center justify-between flex-row mb-2">
-                <Text className="text-base">Atributo #{element}</Text>
-
-                <TouchableOpacity className="rounded-full h-7 aspect-square bg-black flex justify-center items-center">
-                  <Feather name="trash" size={16} color="white" />
-                </TouchableOpacity>
-              </View>
-              <View className="flex flex-row">
-                <View className="flex flex-1">
-                  <TextInput
-                    className="flex text-black placeholder-black px-4 h-12 rounded-full border border-gray-400 mr-1"
-                    placeholder="Cantidad"
-                    placeholderTextColor="gray"
-                    value={quantity}
-                    onChangeText={setQuantity}
-                    keyboardType="number-pad"
-                  />
-                </View>
-                <View className="flex flex-1">
-                  <TextInput
-                    className="flex text-black placeholder-black px-4 h-12 rounded-full border border-gray-400 ml-1"
-                    placeholder="Multiplicador"
-                    placeholderTextColor="gray"
-                    value={quantity}
-                    onChangeText={setQuantity}
-                    keyboardType="number-pad"
-                  />
-                </View>
-              </View>
-            </View>
+              // className="flex items-center flex-col bg-white placeholder-black px-4 py-2 rounded-[32px] mb-2"
+              className="flex text-black placeholder-black bg-white px-4 py-2 h-12 rounded-full mb-2"
+              placeholder="Cantidad"
+              placeholderTextColor="gray"
+              value={quantity}
+              onChangeText={setQuantity}
+              keyboardType="number-pad"
+            />
           );
         })}
 

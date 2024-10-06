@@ -3,18 +3,13 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
-  Image,
-  Alert,
+  TextInput,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import { Feather } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomHeader from "@/components/CustomHeader";
-import {
-  GestureHandlerRootView,
-  TextInput,
-} from "react-native-gesture-handler";
 import { ProductsData } from "@/constants/DataDummy";
 
 export default function Client() {
@@ -23,7 +18,6 @@ export default function Client() {
   const [productObj, setProductObj] = useState<object | null>(null);
   const [name, setName] = useState("");
   const [basePrice, setBasePrice] = useState("");
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const handleCreateProduct = () => {
     router.back();
@@ -35,14 +29,12 @@ export default function Client() {
       setProductObj(temp);
       setName(temp.name);
       setBasePrice(temp.basePrice);
-      // setSelectedImage(temp.imageUri)
     }
   }, []);
 
   return (
-    <GestureHandlerRootView>
-      <SafeAreaView className="min-h-full p-4 relative">
-        {/* <SafeAreaView className="bg-[#fff7fe] min-h-full p-4 relative"> */}
+    <SafeAreaView className="min-h-full relative">
+      <ScrollView className="p-4">
         <CustomHeader
           rightElement={
             productObj ? (
@@ -77,7 +69,7 @@ export default function Client() {
           />
         </View>
 
-        <View className="mb-4">
+        <View className="mb-2">
           <TextInput
             className="bg-white text-black placeholder-black p-3 rounded-full"
             placeholder="Precio base"
@@ -88,7 +80,7 @@ export default function Client() {
           />
         </View>
 
-        <View className="h-4 flex w-full items-center justify-center">
+        <View className="h-4 flex w-full items-center justify-center mb-2">
           <View className="h-0.5 bg-black w-8"></View>
         </View>
 
@@ -140,15 +132,17 @@ export default function Client() {
           <Text className="text-base text-white">Atributo (+)</Text>
         </TouchableOpacity>
 
-        {/* Save Button */}
-        <View className="absolute bottom-0 right-0 p-4">
-          <TouchableOpacity onPress={handleCreateProduct}>
-            <View className="bg-aloha-400 w-16 h-16 rounded-full flex items-center justify-center">
-              <Feather name="save" size={24} color="black" />
-            </View>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    </GestureHandlerRootView>
+        <View className="my-12"></View>
+      </ScrollView>
+      
+      {/* Save Button */}
+      <View className="absolute bottom-0 right-0 p-4">
+        <TouchableOpacity onPress={handleCreateProduct}>
+          <View className="bg-aloha-400 w-16 h-16 rounded-full flex items-center justify-center">
+            <Feather name="save" size={24} color="black" />
+          </View>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 }

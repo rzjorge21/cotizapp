@@ -21,7 +21,7 @@ export const QuotsStateData = [
 ]
 
 export const ProductsData = [
-  { id: 0, name: "Torta 15 cm", basePrice: "30.00", attributes: [1, 2, 3]},
+  { id: 0, name: "Torta 15 cm", basePrice: "30.00", attributes: [1, 2, 3, 4, 5]},
   { id: 1, name: "Caja alfajor 12", basePrice: "12.00", attributes: []},
   { id: 2, name: "Caja muffins 6", basePrice: "48.00", attributes: [1, 2]},
 ]
