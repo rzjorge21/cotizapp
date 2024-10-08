@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, Image } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -11,14 +11,16 @@ import { DemoServices } from "../services";
 import { ShowInfo } from "../utils/toast";
 import { IS_DEMO } from "../config";
 import CustomDemo from "../components/CustomDemo";
+import { initDatabase } from "@/lib/sqlite/database";
 
 const App = () => {
-
   if (IS_DEMO) {
-    return (
-      <CustomDemo/>
-    );
+    return <CustomDemo />;
   }
+
+  useEffect(() => {
+    initDatabase();
+  }, []);
 
   return (
     <SafeAreaView className="bg-white h-full">
