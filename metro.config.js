@@ -6,8 +6,8 @@ const config = getDefaultConfig(__dirname);
 
 config.resolver.assetExts.push(
   // Adds support for `.sql` files for SQLite databases
-  "sql",
-  "txt"
+  "db",
+  "sqlite"
 );
 
 module.exports = config;

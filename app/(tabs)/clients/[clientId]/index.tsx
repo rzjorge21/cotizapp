@@ -17,9 +17,10 @@ import {
   TextInput,
 } from "react-native-gesture-handler";
 import { ClientsData } from "@/constants/DataDummy";
-import { addClient, getClients } from "@/services/clientService";
+import { createClient, getClients } from "@/services/clientService";
+import { Client } from "@/models";
 
-export default function Client() {
+export default function ClientScreen() {
   const { clientId = 0 } = useLocalSearchParams();
 
   const [clientObj, setClientObj] = useState<object | null>(null);
@@ -50,13 +51,17 @@ export default function Client() {
     }
   };
 
-  const handleCreateUser = () => {
-    console.log("Trying to add client")
-    addClient({
-      "name" : "edu",
-      "phoneNumber" : "123123123"
-    })
-    // router.back();
+  const handleCreateUser = async () => {
+    console.log("Trying to add client");
+    const client: Omit<Client, "id" | "createdAt" | "updatedAt" | "deletedAt"> =
+      {
+        name: "edu",
+        phoneNumber: "999888777",
+        createdBy: "DEV",
+      };
+    const res = await createClient(client);
+    console.log(res);
+    router.back();
   };
 
   useEffect(() => {

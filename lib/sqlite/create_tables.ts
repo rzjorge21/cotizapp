@@ -1,6 +1,4 @@
-export const create_table_statement = `-- -----------------------------------------------------
--- Tabla user
--- -----------------------------------------------------
+export const create_table_statement = `
 CREATE TABLE IF NOT EXISTS user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   email TEXT NOT NULL,
@@ -13,9 +11,6 @@ CREATE TABLE IF NOT EXISTS user (
   UNIQUE (email)
 );
 
--- -----------------------------------------------------
--- Tabla master_table
--- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS master_table (
   id INTEGER PRIMARY KEY,
   parentId INTEGER,
@@ -27,15 +22,11 @@ CREATE TABLE IF NOT EXISTS master_table (
   deletedAt TEXT
 );
 
--- Insertamos valores en master_table
-INSERT INTO master_table (id, parentId, value, createdBy, createdAt) VALUES 
+INSERT OR IGNORE INTO master_table (id, parentId, value, createdBy, createdAt) VALUES 
 (200, null, 'STATE', 'INIT', datetime('now')),
 (201, 200, 'Cotizacion', 'INIT', datetime('now')),
 (202, 200, 'Finalizado', 'INIT', datetime('now'));
 
--- -----------------------------------------------------
--- Tabla product
--- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS product (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT,
@@ -47,9 +38,6 @@ CREATE TABLE IF NOT EXISTS product (
   deletedAt TEXT
 );
 
--- -----------------------------------------------------
--- Tabla attribute
--- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS attribute (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   productId INTEGER NOT NULL,
@@ -63,9 +51,6 @@ CREATE TABLE IF NOT EXISTS attribute (
   FOREIGN KEY (productId) REFERENCES product(id)
 );
 
--- -----------------------------------------------------
--- Tabla client
--- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS client (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT,
@@ -77,9 +62,6 @@ CREATE TABLE IF NOT EXISTS client (
   deletedAt TEXT
 );
 
--- -----------------------------------------------------
--- Tabla order
--- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS "order" (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   clientId INTEGER NOT NULL,
@@ -93,9 +75,6 @@ CREATE TABLE IF NOT EXISTS "order" (
   FOREIGN KEY (clientId) REFERENCES client(id)
 );
 
--- -----------------------------------------------------
--- Tabla order_product
--- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS order_product (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   orderId INTEGER NOT NULL,

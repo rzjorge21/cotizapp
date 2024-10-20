@@ -1,63 +1,92 @@
-import db from "@/lib/sqlite/database";
+import { getDatabase } from "@/lib/sqlite/database";
+import { Client } from "@/models";
 
-
-// Función para formatear la fecha en el formato 'YYYY-MM-DD HH:MM:SS'
-const formatDate = (date: Date) => {
-  return date.toISOString().slice(0, 19).replace('T', ' ');
-};
-
-// Función para agregar un cliente
-export const addClient = (client: any) => {
+// Crear un nuevo cliente
+export const createClient = async (client: Omit<Client, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>): Promise<number | null> => {
   try {
-    const createdAt = formatDate(new Date());  // Formatear la fecha correctamente
-
-    db.transaction(tx => {
-      tx.executeSql(
-        'INSERT INTO client (name, phoneNumber, createdBy, createdAt) VALUES (?, ?, ?, ?)',
-        [client.name, client.phoneNumber, "admin", createdAt],
-        (tx, result) => {
-          // Callback de éxito
-          console.log("Cliente agregado con éxito, ID:", result.insertId);
-        },
-        (tx, error) => {
-          // Manejo del error
-          console.error("Error al agregar el cliente:", error);
-          return true; // Indicar que hubo un error
-        }
-      );
-    });
+    const db = await getDatabase();
+    if (db) {
+      const result = await db.runAsync(`
+        INSERT INTO client (name, phoneNumber, createdBy, createdAt, updatedBy, updatedAt) 
+        VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP)`,
+        [client.name, client.phoneNumber || null, client.createdBy || null, null]);
+      return result.changes; // Retorna el ID del cliente insertado
+    } else {
+      console.error("Database not initialized.");
+      return null;
+    }
   } catch (error) {
-    console.error("Error inesperado al agregar cliente:", error);
+    console.error("Error creando cliente:", error);
+    return null;
   }
 };
 
-// Función para obtener clientes
-export const getClients = async (): Promise<any[]> => {
-  return new Promise((resolve, reject) => {
-    try {
-      db.transaction(tx => {
-        tx.executeSql(
-          'SELECT * FROM client',
-          [],
-          (tx, results) => {
-            const clients = [];
-            for (let i = 0; i < results.rows.length; i++) {
-              clients.push(results.rows.item(i));
-            }
-            // Resolución exitosa
-            resolve(clients);
-          },
-          (tx, error) => {
-            // Manejo del error
-            console.error("Error al obtener los clientes:", error);
-            reject(error); // Rechaza la promesa con el error
-            return true; // Esto indica que hubo un error
-          }
-        );
-      });
-    } catch (error) {
-      console.error("Error inesperado al obtener clientes:", error);
-      reject(error);
+// Obtener todos los clientes
+export const getClients = async (): Promise<Client[]> => {
+  try {
+    const db = await getDatabase();
+    if (db) {
+      const result = await db.getAllAsync("SELECT * FROM client;");
+      const clients: Client[] = result.map((row: any) => ({
+        id: row.id,
+        name: row.name,
+        phoneNumber: row.phoneNumber,
+        createdBy: row.createdBy,
+        createdAt: row.createdAt,
+        updatedBy: row.updatedBy,
+        updatedAt: row.updatedAt,
+        deletedAt: row.deletedAt,
+      }));
+      console.log(clients)
+      return clients;
+    } else {
+      console.error("Database not initialized.");
+      return [];
     }
-  });
+  } catch (error) {
+    console.error("Error al obtener los clientes:", error);
+    return [];
+  }
+};
+
+// Actualizar un cliente
+export const updateClient = async (id: number, client: Omit<Client, 'id' | 'createdAt' | 'deletedAt'>): Promise<boolean> => {
+  try {
+    const db = await getDatabase();
+    if (db) {
+      const result = await db.runAsync(`
+        UPDATE client 
+        SET name = ?, phoneNumber = ?, updatedBy = ?, updatedAt = CURRENT_TIMESTAMP
+        WHERE id = ?`,
+        [client.name, client.phoneNumber || "", client.updatedBy || 'INIT', id]);
+      return result.changes > 0; // Retorna true si se actualizó alguna fila
+    } else {
+      console.error("Database not initialized.");
+      return false;
+    }
+  } catch (error) {
+    console.error("Error al actualizar el cliente:", error);
+    return false;
+  }
+};
+
+// Eliminar un cliente (borrado lógico)
+export const deleteClient = async (id: number): Promise<boolean> => {
+  try {
+    const db = await getDatabase();
+    if (db) {
+      const result = await db.runAsync(`
+        UPDATE client 
+        SET deletedAt = CURRENT_TIMESTAMP
+        WHERE id = ?`,
+        [id]);
+      return result.changes > 0; // Retorna true si se actualizó alguna fila
+    } else {
+      console.error("Database not initialized.");
+      return false;
+    }
+  } catch (error) {
+    console.error("Error al eliminar el cliente:", error);
+    return false;
+  }
 };
