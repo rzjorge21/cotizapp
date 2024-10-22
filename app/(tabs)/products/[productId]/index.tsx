@@ -11,25 +11,78 @@ import { Feather } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomHeader from "@/components/CustomHeader";
 import { ProductsData } from "@/constants/DataDummy";
+import { Product } from "@/models";
+import {
+  createProduct,
+  getProductById,
+  updateProduct,
+} from "@/services/productService";
 
-export default function Client() {
+export default function ProductScreen() {
   const { productId = 0 } = useLocalSearchParams();
 
-  const [productObj, setProductObj] = useState<object | null>(null);
-  const [name, setName] = useState("");
-  const [basePrice, setBasePrice] = useState("");
+  const [isCreating, setIsCreating] = useState(false);
+  const [productObj, setProductObj] = useState<Product | null>(null);
 
-  const handleCreateProduct = () => {
+  const [name, setName] = useState("");
+  const [basePrice, setBasePrice] = useState(0);
+  const [attributes, setAttributes] = useState([]);
+
+  const getProductData = async () => {
+    if (Number(productId) == -1) {
+      setIsCreating(true);
+      return;
+    }
+
+    const temp = await getProductById(Number(productId));
+    if (temp) {
+      setProductObj(temp);
+      setName(temp.name || "");
+      setBasePrice(temp.price);
+    }
+  };
+
+  const handleCreateProduct = async () => {
+    console.log("Creating data");
+    const product: Omit<
+      Product,
+      "id" | "createdAt" | "updatedAt" | "deletedAt"
+    > = {
+      name: name,
+      price: basePrice,
+      createdBy: "DEV",
+      attributes: attributes,
+    };
+    const res = await createProduct(product);
+    console.log(res);
     router.back();
   };
 
-  useEffect(() => {
-    const temp = ProductsData.find((item) => item.id.toString() == productId);
-    if (temp) {
-      setProductObj(temp);
-      setName(temp.name);
-      setBasePrice(temp.basePrice);
+  const handleUpdateProduct = async () => {
+    const product: Omit<
+      Product,
+      "id" | "createdAt" | "updatedAt" | "deletedAt"
+    > = {
+      name: name,
+      price: basePrice,
+      createdBy: "DEV",
+      attributes: attributes,
+    };
+    const res = await updateProduct(Number(productId), product);
+    console.log(res);
+    router.back();
+  };
+
+  const handleSaveButton = async () => {
+    if (isCreating) {
+      handleCreateProduct();
+    } else {
+      handleUpdateProduct();
     }
+  };
+
+  useEffect(() => {
+    getProductData();
   }, []);
 
   return (
@@ -74,8 +127,10 @@ export default function Client() {
             className="bg-white text-black placeholder-black p-3 rounded-full"
             placeholder="Precio base"
             placeholderTextColor="gray"
-            value={basePrice}
-            onChangeText={setBasePrice}
+            value={basePrice.toString()}
+            onChangeText={(e) => {
+              setBasePrice(Number(e));
+            }}
             keyboardType="phone-pad"
           />
         </View>
@@ -113,8 +168,10 @@ export default function Client() {
                     className="flex text-black placeholder-black px-4 h-12 rounded-full border border-gray-400 ml-1"
                     placeholder="Multiplicador"
                     placeholderTextColor="gray"
-                    value={basePrice}
-                    onChangeText={setBasePrice}
+                    value={basePrice.toString()}
+                    onChangeText={(e) => {
+                      setBasePrice(Number(e));
+                    }}
                     keyboardType="number-pad"
                   />
                 </View>
@@ -134,10 +191,10 @@ export default function Client() {
 
         <View className="my-12"></View>
       </ScrollView>
-      
+
       {/* Save Button */}
       <View className="absolute bottom-0 right-0 p-4">
-        <TouchableOpacity onPress={handleCreateProduct}>
+        <TouchableOpacity onPress={handleSaveButton}>
           <View className="bg-aloha-400 w-16 h-16 rounded-full flex items-center justify-center">
             <Feather name="save" size={24} color="black" />
           </View>

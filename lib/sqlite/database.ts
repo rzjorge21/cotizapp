@@ -44,3 +44,8 @@ export async function initDatabase() {
     throw error;
   }
 }
+
+export async function removeDatabase() {
+  const sqlDir = FileSystem.documentDirectory + "SQLite/";
+  await FileSystem.deleteAsync(sqlDir + "quot_v1.db", {idempotent: true});
+}

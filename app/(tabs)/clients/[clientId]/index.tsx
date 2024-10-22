@@ -17,13 +17,20 @@ import {
   TextInput,
 } from "react-native-gesture-handler";
 import { ClientsData } from "@/constants/DataDummy";
-import { createClient, getClients } from "@/services/clientService";
+import {
+  createClient,
+  getClientById,
+  getClients,
+  updateClient,
+} from "@/services/clientService";
 import { Client } from "@/models";
 
 export default function ClientScreen() {
   const { clientId = 0 } = useLocalSearchParams();
 
-  const [clientObj, setClientObj] = useState<object | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
+  const [clientObj, setClientObj] = useState<Client | null>(null);
+
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -51,12 +58,28 @@ export default function ClientScreen() {
     }
   };
 
+  const getClientData = async () => {
+    if (Number(clientId) == -1) {
+      setIsCreating(true);
+      return;
+    }
+
+    const temp = await getClientById(Number(clientId));
+    if (temp) {
+      setClientObj(temp);
+      setName(temp.name);
+      setPhoneNumber(temp.phoneNumber || "");
+      setSelectedImage(temp.imageUri || null);
+    }
+  };
+
   const handleCreateUser = async () => {
-    console.log("Trying to add client");
+    console.log("Creating data")
     const client: Omit<Client, "id" | "createdAt" | "updatedAt" | "deletedAt"> =
       {
-        name: "edu",
-        phoneNumber: "999888777",
+        name: name,
+        phoneNumber: phoneNumber,
+        imageUri: selectedImage || "",
         createdBy: "DEV",
       };
     const res = await createClient(client);
@@ -64,16 +87,29 @@ export default function ClientScreen() {
     router.back();
   };
 
-  useEffect(() => {
-    console.log(getClients());
+  const handleUpdateClient = async () => {
+    const client: Omit<Client, "id" | "createdAt" | "updatedAt" | "deletedAt"> =
+      {
+        name: name,
+        phoneNumber: phoneNumber,
+        imageUri: selectedImage || "",
+        createdBy: "DEV",
+      };
+    const res = await updateClient(Number(clientId), client);
+    console.log(res);
+    router.back();
+  };
 
-    const temp = ClientsData.find((item) => item.id.toString() == clientId);
-    if (temp) {
-      setClientObj(temp);
-      setName(temp.name);
-      setPhoneNumber(temp.phoneNumber);
-      setSelectedImage(temp.imageUri);
+  const handleSaveButton = async () => {
+    if(isCreating) {
+      handleCreateUser()
+    } else {
+      handleUpdateClient()
     }
+  }
+
+  useEffect(() => {
+    getClientData();
   }, []);
 
   return (
@@ -148,7 +184,7 @@ export default function ClientScreen() {
 
         {/* Save Button */}
         <View className="absolute bottom-0 right-0 p-4">
-          <TouchableOpacity onPress={handleCreateUser}>
+          <TouchableOpacity onPress={() => {handleSaveButton()}}>
             <View className="bg-aloha-400 w-16 h-16 rounded-full flex items-center justify-center">
               <Feather name="save" size={24} color="black" />
             </View>

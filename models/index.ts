@@ -32,6 +32,7 @@ export interface Product {
   updatedBy?: string;
   updatedAt: string;
   deletedAt?: string;
+  attributes: Attribute[];
 }
 
 // attribute.model.ts
@@ -52,6 +53,7 @@ export interface Client {
   id: number;
   name: string;
   phoneNumber?: string;
+  imageUri?: string;
   createdBy?: string;
   createdAt: string;
   updatedBy?: string;

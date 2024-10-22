@@ -9,6 +9,9 @@ import {
 } from "react-native";
 import { router } from "expo-router";
 import { ProductsData } from "@/constants/DataDummy";
+import { useEffect, useState } from "react";
+import { Product } from "@/models";
+import { getProducts } from "@/services/productService";
 
 const Header = ({ handleCreateProduct }: { handleCreateProduct: () => void }) => (
   <View className="flex flex-row items-center my-2">
@@ -28,7 +31,8 @@ const Header = ({ handleCreateProduct }: { handleCreateProduct: () => void }) =>
 );
 
 const Products = () => {
-  const products = ProductsData;
+  // const products = ProductsData;
+  const [products, setProducts] = useState<Product[]>([]);
 
   const handleCreateProduct = () => {
     router.push({
@@ -44,10 +48,28 @@ const Products = () => {
     });
   };
 
+  const initData = async () => {
+    const result = await getProducts();
+    setProducts(result);
+  };
+
+  useEffect(() => {
+    initData();
+  }, []);
+
+
   return (
     <SafeAreaView className="min-h-screen">
       <ScrollView className="p-4">
         <Header handleCreateProduct={handleCreateProduct} />
+        
+        <TouchableOpacity
+          className="flex flex-col rounded-[32px] bg-white w-[48%] mb-4 p-4"
+          onPress={() => {
+            initData();
+          }}
+        ></TouchableOpacity>
+
         <View className="flex flex-wrap flex-row w-full justify-between">
           {products.map((element) => {
             return (
@@ -63,11 +85,12 @@ const Products = () => {
                 </View>
                 <View className="flex flex-row justify-center mt-2">
                   <View className="flex justify-center mr-2">
-                    <Text className="text-base">{element.basePrice}</Text>
+                    <Text className="text-base">{element.price}</Text>
                     <Text className="text-xs">Precio base</Text>
                   </View>
                   <View className="flex justify-center ml-2">
-                    <Text className="text-base">{element.attributes.length}</Text>
+                    <Text className="text-base">00</Text>
+                    {/* <Text className="text-base">{element.attributes.length}</Text> */}
                     <Text className="text-xs">Atributos</Text>
                   </View>
                 </View>

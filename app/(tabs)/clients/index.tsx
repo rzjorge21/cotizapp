@@ -58,6 +58,12 @@ const Clients = () => {
     <SafeAreaView className="min-h-screen">
       <ScrollView className="p-4">
         <Header handleCreateClient={handleCreateClient} />
+        <TouchableOpacity
+          className="flex flex-col rounded-[32px] bg-white w-[48%] mb-4 p-4"
+          onPress={() => {
+            initData();
+          }}
+        ></TouchableOpacity>
         <View className="flex flex-wrap flex-row w-full justify-between">
           {clients.map((element) => {
             return (
@@ -70,7 +76,7 @@ const Clients = () => {
               >
                 <View className="flex flex-row items-center">
                   <View className="flex items-center justify-center h-14 aspect-square bg-aloha-100 rounded-full">
-                    {/* {element.imageUri ? (
+                    {element.imageUri ? (
                       <Image
                         source={{ uri: element.imageUri }}
                         style={{
@@ -82,10 +88,11 @@ const Clients = () => {
                       />
                     ) : (
                       <Text className="text-2xl">{element.name[0]}</Text>
-                    )} */}
-                    <Text className="text-2xl">{element.name[0].toUpperCase()}</Text>
+                    )}
                   </View>
-                  <Text className="ml-3 text-lg">{element.name}</Text>
+                  <View className="ml-3">
+                    <Text className="text-lg">{element.name}</Text>
+                  </View>
                 </View>
                 <View className="flex flex-row justify-center mt-2">
                   <View className="flex justify-center mr-2">
