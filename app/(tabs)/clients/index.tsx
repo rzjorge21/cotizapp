@@ -1,9 +1,9 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
 import { View, Image, Text, TouchableOpacity, ScrollView } from "react-native";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { ClientsData } from "@/constants/DataDummy";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getClients } from "@/services/clientService";
 import { Client } from "@/models";
 
@@ -50,9 +50,15 @@ const Clients = () => {
     setClients(result);
   };
 
-  useEffect(() => {
-    initData();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      initData(); // Realiza el fetch cada vez que la pantalla se enfoca
+    }, [])
+  );
+
+  // useEffect(() => {
+  //   initData();
+  // }, []);
 
   return (
     <SafeAreaView className="min-h-screen">
