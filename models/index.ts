@@ -32,21 +32,21 @@ export interface Product {
   updatedBy?: string;
   updatedAt: string;
   deletedAt?: string;
-  attributes: Attribute[];
+  // attributes: Attribute[];
 }
 
-// attribute.model.ts
-export interface Attribute {
-  id: number;
-  productId: number;
-  name: string;
-  price: number;
-  createdBy: string;
-  createdAt: string;
-  updatedBy?: string;
-  updatedAt: string;
-  deletedAt?: string;
-}
+// // attribute.model.ts
+// export interface Attribute {
+//   id: number;
+//   productId: number;
+//   name: string;
+//   price: number;
+//   createdBy: string;
+//   createdAt: string;
+//   updatedBy?: string;
+//   updatedAt: string;
+//   deletedAt?: string;
+// }
 
 // client.model.ts
 export interface Client {
@@ -80,7 +80,7 @@ export interface OrderProduct {
   orderId: number;
   productId: number;
   quantity: number;
-  attributes?: string;
+  // attributes?: string;
   createdBy: string;
   createdAt: string;
   updatedBy?: string;

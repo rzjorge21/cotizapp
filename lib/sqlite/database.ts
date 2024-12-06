@@ -2,14 +2,17 @@ import * as SQLite from "expo-sqlite";
 import { create_table_statement } from "./create_tables";
 import * as FileSystem from "expo-file-system";
 import { Asset } from "expo-asset";
+import { Logger } from "@/utils/logger";
 
 export async function getDatabase() {
   try {
     const internalDbName = "quot_v1.db";
     const sqlDir = FileSystem.documentDirectory + "SQLite/";
+    Logger.log(`🥫 Opening database ${internalDbName}.`);
 
     // Verifica si el archivo de base de datos ya existe
     if (!(await FileSystem.getInfoAsync(sqlDir + internalDbName)).exists) {
+      Logger.log(`🥫 ${internalDbName} doesn't exists, creating a new one.`);
       await FileSystem.makeDirectoryAsync(sqlDir, { intermediates: true });
       const asset = Asset.fromModule(require("../../assets/db/quot_v1.db"));
       await FileSystem.downloadAsync(asset.uri, sqlDir + internalDbName);
@@ -17,9 +20,10 @@ export async function getDatabase() {
 
     // Abre la base de datos
     const db = await SQLite.openDatabaseAsync(internalDbName);
+    Logger.log(`🥫 ${internalDbName} database was opened succesfully.`);
     return db;
   } catch (error) {
-    console.error("Error getting db: ", error);
+    Logger.log(`❌ Error getting db: ${error}`);
     throw error;
   }
 }
@@ -36,16 +40,25 @@ export async function initDatabase() {
       .map((stmt: string) => stmt.trim())
       .filter((stmt: string) => stmt.length);
 
+    Logger.log(`🥫 Executing sql statements.`);
     sqlStatements.map(async (stmt: string) => {
       await db.execAsync(stmt);
     });
+    Logger.log(`🥫 Sql statements executed succesfully.`);
   } catch (error) {
-    console.error("Error reading or executing SQL file: ", error);
+    Logger.log(`❌ Error reading or executing SQL file: ${error}`);
     throw error;
   }
 }
 
 export async function removeDatabase() {
-  const sqlDir = FileSystem.documentDirectory + "SQLite/";
-  await FileSystem.deleteAsync(sqlDir + "quot_v1.db", {idempotent: true});
+  try {
+    Logger.log(`🥫 Removing database.`);
+    const sqlDir = FileSystem.documentDirectory + "SQLite/";
+    await FileSystem.deleteAsync(sqlDir + "quot_v1.db", { idempotent: true });
+    Logger.log(`🥫 Database removed succesfully.`);
+  } catch (error) {
+    Logger.log(`❌ Error removing database: ${error}`);
+    throw error;
+  }
 }

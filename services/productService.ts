@@ -121,21 +121,10 @@ export const getProductById = async (id: number): Promise<Product | null> => {
       // Ejecutar la consulta para obtener el producto por ID
       const result = await db.getFirstAsync<Product>(
         "SELECT * FROM product WHERE id = ?;",
-        [id] // Pasar el ID como parámetro para la consulta
+        [id]
       );
 
-      // Verificar si el producto existe
-      if (result) {
-        const attributes = await getAttributesByProductId(result.id); // Obtener atributos por productId
-        return {
-          ...result,
-          attributes, // Añadir atributos
-        };
-      } else {
-        console.log(`Producto con ID ${id} no encontrado.`);
-        return null;
-      }
-
+      return result;
     } else {
       console.error("La base de datos no está inicializada.");
       return null;

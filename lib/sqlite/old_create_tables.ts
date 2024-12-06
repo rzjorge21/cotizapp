@@ -1,4 +1,4 @@
-export const create_table_statement = `
+export const old_create_table_statement = `
 CREATE TABLE IF NOT EXISTS user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   email TEXT NOT NULL,
@@ -38,6 +38,19 @@ CREATE TABLE IF NOT EXISTS product (
   deletedAt TEXT
 );
 
+CREATE TABLE IF NOT EXISTS attribute (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  productId INTEGER NOT NULL,
+  name TEXT,
+  price DECIMAL(10, 2),
+  createdBy TEXT NOT NULL DEFAULT 'INIT',
+  createdAt TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updatedBy TEXT,
+  updatedAt TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deletedAt TEXT,
+  FOREIGN KEY (productId) REFERENCES product(id)
+);
+
 CREATE TABLE IF NOT EXISTS client (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT,
@@ -68,6 +81,7 @@ CREATE TABLE IF NOT EXISTS order_product (
   orderId INTEGER NOT NULL,
   productId INTEGER NOT NULL,
   quantity INTEGER NOT NULL,
+  attributes TEXT,
   createdBy TEXT NOT NULL DEFAULT 'INIT',
   createdAt TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updatedBy TEXT,

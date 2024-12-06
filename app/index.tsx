@@ -12,6 +12,7 @@ import { ShowInfo } from "../utils/toast";
 import { IS_DEMO } from "../config";
 import CustomDemo from "../components/CustomDemo";
 import { initDatabase, removeDatabase } from "@/lib/sqlite/database";
+import { Logger } from "@/utils/logger";
 
 const App = () => {
   if (IS_DEMO) {
@@ -19,6 +20,7 @@ const App = () => {
   }
 
   useEffect(() => {
+    Logger.log(`📦 Starting Quot App.`)
     // removeDatabase();
     initDatabase();
   }, []);
