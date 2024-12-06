@@ -6,7 +6,6 @@ import CustomTabBar from "../../components/CustomTabBar";
 import { useAuthStore } from "../../store/authStore";
 import { StatusBar } from "expo-status-bar";
 
-
 const TabIcon = ({ icon, color, name, focused }: any) => {
   return (
     <View
@@ -34,7 +33,7 @@ const TabsLayout = () => {
           tabBarActiveTintColor: "#d45f77",
           tabBarInactiveTintColor: "#19191A",
           tabBarStyle: {
-            position: "absolute",
+            // position: "absolute",
             backgroundColor: "#1E1F1F",
             borderRadius: 999,
             borderTopWidth: 0,
@@ -42,8 +41,8 @@ const TabsLayout = () => {
             height: 54,
             paddingHorizontal: 2,
             width: 200,
-            left: "50%",
-            transform: [{ translateX: -100 }],
+            // left: "50%",
+            // transform: [{ translateX: -100 }],
             alignSelf: "center",
           },
         }}

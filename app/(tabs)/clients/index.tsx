@@ -64,12 +64,12 @@ const Clients = () => {
     <SafeAreaView className="min-h-screen">
       <ScrollView className="p-4">
         <Header handleCreateClient={handleCreateClient} />
-        <TouchableOpacity
+        {/* <TouchableOpacity
           className="flex flex-col rounded-[32px] bg-white w-[48%] mb-4 p-4"
           onPress={() => {
             initData();
           }}
-        ></TouchableOpacity>
+        ></TouchableOpacity> */}
         <View className="flex flex-wrap flex-row w-full justify-between">
           {clients.map((element) => {
             return (
