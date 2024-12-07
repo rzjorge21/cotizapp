@@ -20,7 +20,7 @@ const App = () => {
   }
 
   useEffect(() => {
-    Logger.log(`📦 Starting Quot App.`)
+    Logger.log(`😎 Starting Quot App.`)
     // removeDatabase();
     initDatabase();
   }, []);
