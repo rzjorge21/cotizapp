@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
 import { QuotsData } from "../../../constants/DataDummy";
 import { router } from "expo-router";
+import { QUOT_STATES } from "@/config";
 
 const Header = ({ handleCreateQuot }: { handleCreateQuot: () => void }) => (
   <View className="flex flex-row items-center my-2">
@@ -26,9 +27,9 @@ const Header = ({ handleCreateQuot }: { handleCreateQuot: () => void }) => (
 const Home = () => {
   const [choiceChip, setChoiceChip] = useState(0);
   const chips = [
-    { id: 0, text: "Todos" },
-    { id: 1, text: "Cotizados" },
-    { id: 2, text: "Finalizados" },
+    { id: 0, state: null, text: "Todos" },
+    { id: 1, state: QUOT_STATES.QUOTATION, text: "Cotizados" },
+    { id: 2, state: QUOT_STATES.ORDER, text: "Finalizados" },
   ];
 
   const quots = QuotsData;

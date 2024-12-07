@@ -50,12 +50,18 @@ export const createOrder = async (
   }
 };
 
-export const getOrders = async (): Promise<Order[]> => {
+export const getOrders = async (state?: QUOT_STATES): Promise<Order[]> => {
   try {
     const db = await getDatabase();
     Logger.log(`📃 Creating order.`);
-    const result = await db.getAllAsync("SELECT * FROM order;");
 
+    const query = state
+      ? "SELECT * FROM order WHERE status = ?;"
+      : "SELECT * FROM order;";
+    const params = state ? [state] : [];
+
+    const result = await db.getAllAsync(query, params);
+    
     const orders: Order[] = await Promise.all(
       result.map(async (row: any) => ({
         id: row.id,
@@ -122,7 +128,7 @@ export const updateOrder = async (
         WHERE id = ?`,
       [totalPrice, orderId]
     );
-    
+
     Logger.log(`📃 Order updated succesfully.`);
     return result.changes > 0;
   } catch (error) {
