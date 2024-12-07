@@ -53,7 +53,9 @@ export const createOrder = async (
 export const getOrders = async (state?: QUOT_STATES): Promise<Order[]> => {
   try {
     const db = await getDatabase();
-    Logger.log(`📃 Creating order.`);
+    state
+      ? Logger.log(`📃 Getting all orders.`)
+      : Logger.log(`📃 Getting orders filtered by status: ${state}.`);
 
     const query = state
       ? "SELECT * FROM order WHERE status = ?;"
@@ -61,7 +63,7 @@ export const getOrders = async (state?: QUOT_STATES): Promise<Order[]> => {
     const params = state ? [state] : [];
 
     const result = await db.getAllAsync(query, params);
-    
+
     const orders: Order[] = await Promise.all(
       result.map(async (row: any) => ({
         id: row.id,
