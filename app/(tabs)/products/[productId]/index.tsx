@@ -26,7 +26,6 @@ export default function ProductScreen() {
 
   const [name, setName] = useState("");
   const [basePrice, setBasePrice] = useState(0);
-  const [attributes, setAttributes] = useState([]);
 
   const getProductData = async () => {
     if (Number(productId) == -1) {
@@ -51,7 +50,6 @@ export default function ProductScreen() {
       name: name,
       price: basePrice,
       createdBy: "DEV",
-      attributes: attributes,
     };
     const res = await createProduct(product);
     console.log(res);
@@ -66,7 +64,6 @@ export default function ProductScreen() {
       name: name,
       price: basePrice,
       createdBy: "DEV",
-      attributes: attributes,
     };
     const res = await updateProduct(Number(productId), product);
     console.log(res);
@@ -134,62 +131,6 @@ export default function ProductScreen() {
             keyboardType="phone-pad"
           />
         </View>
-
-        <View className="h-4 flex w-full items-center justify-center mb-2">
-          <View className="h-0.5 bg-black w-8"></View>
-        </View>
-
-        {productObj?.attributes.map((element: any) => {
-          return (
-            <View
-              key={element}
-              className="flex items-center flex-col bg-white placeholder-black px-4 py-2 rounded-[32px] mb-2"
-            >
-              <View className="flex w-full items-center justify-between flex-row mb-2">
-                <Text className="text-base">Atributo #{element}</Text>
-
-                <TouchableOpacity className="rounded-full h-7 aspect-square bg-black flex justify-center items-center">
-                  <Feather name="trash" size={16} color="white" />
-                </TouchableOpacity>
-              </View>
-              <View className="flex flex-row">
-                <View className="flex flex-1">
-                  <TextInput
-                    className="flex text-black placeholder-black px-4 h-12 rounded-full border border-gray-400 mr-1"
-                    placeholder="Cantidad"
-                    placeholderTextColor="gray"
-                    value={name}
-                    onChangeText={setName}
-                    keyboardType="number-pad"
-                  />
-                </View>
-                <View className="flex flex-1">
-                  <TextInput
-                    className="flex text-black placeholder-black px-4 h-12 rounded-full border border-gray-400 ml-1"
-                    placeholder="Multiplicador"
-                    placeholderTextColor="gray"
-                    value={basePrice.toString()}
-                    onChangeText={(e) => {
-                      setBasePrice(Number(e));
-                    }}
-                    keyboardType="number-pad"
-                  />
-                </View>
-              </View>
-            </View>
-          );
-        })}
-
-        <TouchableOpacity
-          onPress={() => {
-            handleCreateProduct();
-          }}
-          className="flex items-center justify-center bg-black h-14 rounded-full mb-2"
-        >
-          <Text className="text-base text-white">Atributo (+)</Text>
-        </TouchableOpacity>
-
-        <View className="my-12"></View>
       </ScrollView>
 
       {/* Save Button */}

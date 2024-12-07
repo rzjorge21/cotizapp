@@ -1,19 +1,17 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
-import {
-  View,
-  Image,
-  Text,
-  TouchableOpacity,
-  ScrollView
-} from "react-native";
-import { router } from "expo-router";
+import { View, Image, Text, TouchableOpacity, ScrollView } from "react-native";
+import { router, useFocusEffect } from "expo-router";
 import { ProductsData } from "@/constants/DataDummy";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Product } from "@/models";
 import { getProducts } from "@/services/productService";
 
-const Header = ({ handleCreateProduct }: { handleCreateProduct: () => void }) => (
+const Header = ({
+  handleCreateProduct,
+}: {
+  handleCreateProduct: () => void;
+}) => (
   <View className="flex flex-row items-center my-2">
     <Text className="text-2xl font-pbold">Productos</Text>
 
@@ -48,28 +46,21 @@ const Products = () => {
     });
   };
 
-  const initData = async () => {
+  const fetchData = async () => {
     const result = await getProducts();
     setProducts(result);
   };
 
-  useEffect(() => {
-    initData();
-  }, []);
-
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [])
+  );
 
   return (
     <SafeAreaView className="min-h-screen">
       <ScrollView className="p-4">
         <Header handleCreateProduct={handleCreateProduct} />
-        
-        <TouchableOpacity
-          className="flex flex-col rounded-[32px] bg-white w-[48%] mb-4 p-4"
-          onPress={() => {
-            initData();
-          }}
-        ></TouchableOpacity>
-
         <View className="flex flex-wrap flex-row w-full justify-between">
           {products.map((element) => {
             return (
@@ -81,18 +72,15 @@ const Products = () => {
                 }}
               >
                 <View className="flex flex-row items-center">
-                  <Text className="ml-3 text-base">{element.name}</Text>
+                  <Text className="ml-2 text-sm">{element.name}</Text>
                 </View>
-                <View className="flex flex-row justify-center mt-2">
-                  <View className="flex justify-center mr-2">
-                    <Text className="text-base">{element.price}</Text>
-                    <Text className="text-xs">Precio base</Text>
-                  </View>
-                  <View className="flex justify-center ml-2">
-                    <Text className="text-base">00</Text>
-                    {/* <Text className="text-base">{element.attributes.length}</Text> */}
-                    <Text className="text-xs">Atributos</Text>
-                  </View>
+
+                <View className="h-2 flex w-full items-center justify-center mt-1.5">
+                  <View className="h-[1px] bg-black w-3"></View>
+                </View>
+                <View className="flex flex-row justify-center items-end gap-2 mr-2">
+                  <Text className="text-sm">S/.{element.price}</Text>
+                  <Text className="text-xs">Precio</Text>
                 </View>
               </TouchableOpacity>
             );

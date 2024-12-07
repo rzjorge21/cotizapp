@@ -45,31 +45,21 @@ const Clients = () => {
     });
   };
 
-  const initData = async () => {
+  const fetchData = async () => {
     const result = await getClients();
     setClients(result);
   };
 
   useFocusEffect(
     useCallback(() => {
-      initData(); // Realiza el fetch cada vez que la pantalla se enfoca
+      fetchData();
     }, [])
   );
-
-  // useEffect(() => {
-  //   initData();
-  // }, []);
 
   return (
     <SafeAreaView className="min-h-screen">
       <ScrollView className="p-4">
         <Header handleCreateClient={handleCreateClient} />
-        {/* <TouchableOpacity
-          className="flex flex-col rounded-[32px] bg-white w-[48%] mb-4 p-4"
-          onPress={() => {
-            initData();
-          }}
-        ></TouchableOpacity> */}
         <View className="flex flex-wrap flex-row w-full justify-between">
           {clients.map((element) => {
             return (
