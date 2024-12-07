@@ -1,28 +1,49 @@
 import { Logger } from "@/utils/logger";
 import { getDatabase } from "../lib/sqlite/database";
-import { Order } from "../models";
+import { Order, Product } from "../models";
 import { QUOT_STATES } from "@/config";
+import { getProductById } from "./productService";
 
 export const createOrder = async (
-  order: Omit<Order, "id" | "createdAt" | "updatedAt" | "deletedAt">
+  clientId: number,
+  items: { productId: number; quantity: number }[]
 ): Promise<number | null> => {
   try {
     Logger.log(`📃 Creating order.`);
     const db = await getDatabase();
-    const result = await db.runAsync(
+    let totalPrice = 0;
+    const createdOrder = await db.runAsync(
       `
         INSERT INTO order (clientId, totalPrice, status, createdBy, createdAt, updatedBy, updatedAt) 
         VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP)`,
-      [
-        order.clientId,
-        order.totalPrice,
-        order.status,
-        order.createdBy || "INIT",
-        order.updatedBy || "INIT",
-      ]
+      [clientId, totalPrice, QUOT_STATES.QUOTATION, "INIT", "INIT"]
+    );
+    const orderId = createdOrder.lastInsertRowId;
+
+    items.forEach(async (item) => {
+      const product: Product | null = await getProductById(item.productId);
+      if (product) {
+        totalPrice += product.price * item.quantity;
+        await db.runAsync(
+          `
+            INSERT INTO order_product (orderId, productId, quantity, createdBy, createdAt, updatedBy, updatedAt) 
+            VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP)`,
+          [orderId, item.productId, item.quantity, "INIT", "INIT"]
+        );
+      } else {
+        throw Error;
+      }
+    });
+
+    const result = await db.runAsync(
+      `
+        UPDATE order
+        SET totalPrice = ?, updatedAt = CURRENT_TIMESTAMP
+        WHERE id = ?`,
+      [totalPrice, orderId]
     );
     Logger.log(`📃 Order created succesfully.`);
-    return result.changes;
+    return createdOrder.changes;
   } catch (error) {
     Logger.log(`❌ Error creating order. Error: ${error}`);
     return null;
@@ -57,39 +78,55 @@ export const getOrders = async (): Promise<Order[]> => {
 };
 
 export const updateOrder = async (
-  id: number,
-  order: Omit<Order, "id" | "createdAt" | "updatedAt" | "deletedAt">
+  orderId: number,
+  clientId: number,
+  items: { productId: number; quantity: number }[]
 ): Promise<boolean> => {
   try {
-    Logger.log(`📃 Updating order with id: ${id}.`);
+    Logger.log(`📃 Updating order with id: ${orderId}.`);
     const db = await getDatabase();
+    let totalPrice = 0;
 
-    const temp = await db.getFirstAsync<Order>(
+    const createdOrder = await db.getFirstAsync<Order>(
       "SELECT * FROM order WHERE id = ?;",
-      [id]
+      [orderId]
     );
-    if (temp?.status == QUOT_STATES.ORDER) {
+
+    if (createdOrder?.status == QUOT_STATES.ORDER) {
       Logger.log(`📃 Cannot update a completed order.`);
       return false;
     }
 
+    // Deleting past order products
+    await db.runAsync(`DELETE FROM order_product WHERE orderId = ?`, [orderId]);
+
+    items.forEach(async (item) => {
+      const product: Product | null = await getProductById(item.productId);
+      if (product) {
+        totalPrice += product.price * item.quantity;
+        await db.runAsync(
+          `
+            INSERT INTO order_product (orderId, productId, quantity, createdBy, createdAt, updatedBy, updatedAt) 
+            VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP)`,
+          [orderId, item.productId, item.quantity, "INIT", "INIT"]
+        );
+      } else {
+        throw Error;
+      }
+    });
+
     const result = await db.runAsync(
       `
-        UPDATE "order" 
-        SET clientId = ?, totalPrice = ?, status = ?, updatedBy = ?, updatedAt = CURRENT_TIMESTAMP
+        UPDATE order
+        SET totalPrice = ?, updatedAt = CURRENT_TIMESTAMP
         WHERE id = ?`,
-      [
-        order.clientId,
-        order.totalPrice,
-        order.status,
-        order.updatedBy || "INIT",
-        id,
-      ]
+      [totalPrice, orderId]
     );
+    
     Logger.log(`📃 Order updated succesfully.`);
     return result.changes > 0;
   } catch (error) {
-    Logger.log(`❌ Error updating order with id: ${id}. Error: ${error}`);
+    Logger.log(`❌ Error updating order with id: ${orderId}. Error: ${error}`);
     return false;
   }
 };
