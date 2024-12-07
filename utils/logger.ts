@@ -1,5 +1,8 @@
+import { DEBUG } from "@/config";
+
 export class Logger {
   static log(content: unknown): void {
+    if (!DEBUG) return;
     const options: Intl.DateTimeFormatOptions = {
       year: "numeric",
       month: "2-digit",
