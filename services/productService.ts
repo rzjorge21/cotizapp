@@ -1,6 +1,5 @@
 import { getDatabase } from "@/lib/sqlite/database";
 import { Product } from "@/models";
-import { getAttributesByProductId } from "./attributeService";
 import { Logger } from "@/utils/logger";
 
 // Crear un nuevo producto
@@ -29,11 +28,10 @@ export const getProducts = async (): Promise<Product[]> => {
   try {
     Logger.log("📦 Retrieving all products.");
     const db = await getDatabase();
-    const result = await db.getAllAsync("SELECT * FROM product;");
+    const result = await db.getAllAsync(`SELECT * FROM product;`);
 
     const products: Product[] = await Promise.all(
       result.map(async (row: any) => {
-        const attributes = await getAttributesByProductId(row.id);
         return {
           id: row.id,
           name: row.name,
@@ -44,7 +42,6 @@ export const getProducts = async (): Promise<Product[]> => {
           updatedBy: row.updatedBy,
           updatedAt: row.updatedAt,
           deletedAt: row.deletedAt,
-          attributes,
         };
       })
     );
@@ -52,7 +49,7 @@ export const getProducts = async (): Promise<Product[]> => {
     Logger.log("📦 Products retrieved successfully.");
     return products;
   } catch (error) {
-    Logger.log(`❌ Error retrieving products. Error: ${error}`);
+    Logger.log(`❌ Error retrieving products. ${error}`);
     return [];
   }
 };

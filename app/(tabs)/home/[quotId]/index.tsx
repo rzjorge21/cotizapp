@@ -17,19 +17,34 @@ import {
   TextInput,
 } from "react-native-gesture-handler";
 import { ClientsData, QuotsData } from "@/constants/DataDummy";
+import { Client } from "@/models";
+import { getClients } from "@/services/clientService";
+import { useOrderProductStore } from "@/store/orderProductStore";
+import { Logger } from "@/utils/logger";
+import { QUOT_STATES } from "@/config";
 
 export default function Quot() {
   const { quotId = -1 } = useLocalSearchParams();
+  const { orderProducts, addOrderProduct, removeOrderProduct } =
+    useOrderProductStore();
 
   const [quotObj, setQuotObj] = useState<object | null>(null);
   const [code, setCode] = useState("");
-  const [state, setState] = useState(0);
+  const [state, setState] = useState(QUOT_STATES.QUOTATION);
 
-  const clients = ClientsData;
+  const [clients, setClients] = useState<Client[]>([]);
   const [selectedClient, setSelectedClient] = useState<number | null>(null);
 
   const handleCreateQuot = () => {
     router.back();
+  };
+
+  const getTotalPrice = () => {
+    Logger.log(orderProducts)
+    return orderProducts.reduce((total, orderProduct) => {
+      Logger.log(total)
+      return total + orderProduct.price * orderProduct.quantity;
+    }, 0);
   };
 
   const handleCreateProduct = () => {
@@ -37,6 +52,15 @@ export default function Quot() {
       pathname: `/(tabs)/home/${quotId}/add-product`,
     });
   };
+
+  const fetchClients = async () => {
+    const result = await getClients();
+    setClients(result);
+  };
+
+  useEffect(() => {
+    fetchClients();
+  }, []);
 
   useEffect(() => {
     const temp = QuotsData.find((item) => item.id.toString() == quotId);
@@ -77,7 +101,7 @@ export default function Quot() {
         {quotObj ? (
           <View className="flex flex-row justify-between">
             <Text className="text-2xl font-pbold">Ver Cotización</Text>
-            {state == 0 ? (
+            {state == QUOT_STATES.QUOTATION ? (
               <TouchableOpacity className="flex justify-center items-center bg-aloha-300 rounded-full px-5">
                 <Text className="text-xs font-pbold">Cotización</Text>
               </TouchableOpacity>
@@ -93,18 +117,8 @@ export default function Quot() {
 
         <View className="py-2" />
 
-        <View className="mb-2">
-          <TextInput
-            className="bg-white text-black placeholder-black px-4 h-12 rounded-full"
-            placeholder="Nombre"
-            placeholderTextColor="gray"
-            value={code}
-            onChangeText={setCode}
-          />
-        </View>
-
         <View className="flex justify-center bg-white rounded-full h-12">
-          {quotObj && state == 1 ? (
+          {quotObj && state == QUOT_STATES.ORDER ? (
             <Text className="px-4">
               {clients.find((client) => client.id === selectedClient)?.name}
             </Text>
@@ -132,44 +146,36 @@ export default function Quot() {
           <View className="h-0.5 bg-black w-8"></View>
         </View>
 
-        <TouchableOpacity className="flex items-center justify-between flex-row bg-white placeholder-black px-4 h-12 rounded-full mb-2">
-          <Text>2 und - Caja de alfajor</Text>
-          {quotObj && state == 1 ? (
-            <></>
-          ) : (
-            <TouchableOpacity className="rounded-full h-7 aspect-square bg-black flex justify-center items-center">
-              <Feather name="trash" size={16} color="white" />
-            </TouchableOpacity>
-          )}
-        </TouchableOpacity>
-
-        <TouchableOpacity className="bg-white placeholder-black px-4 rounded-[32px] mb-2">
-          <View className="flex items-center justify-between flex-row h-12">
-            <Text>1 und - Torta 15 cm</Text>
-
-            {quotObj && state == 1 ? (
-              <></>
-            ) : (
-              <TouchableOpacity className="rounded-full h-7 aspect-square bg-black flex justify-center items-center">
-                <Feather name="trash" size={16} color="white" />
+        {orderProducts ? (
+          orderProducts.map((orderProduct, index) => {
+            return (
+              <TouchableOpacity
+                key={orderProduct.productId}
+                className="flex items-center justify-between flex-row bg-white placeholder-black px-4 h-12 rounded-full mb-2"
+              >
+                <Text>
+                  {orderProduct.quantity} und - {orderProduct.productName}
+                </Text>
+                {quotObj && state == QUOT_STATES.ORDER ? (
+                  <></>
+                ) : (
+                  <TouchableOpacity
+                    className="rounded-full h-7 aspect-square bg-black flex justify-center items-center"
+                    onPress={() => {
+                      removeOrderProduct(orderProduct.productId);
+                    }}
+                  >
+                    <Feather name="trash" size={16} color="white" />
+                  </TouchableOpacity>
+                )}
               </TouchableOpacity>
-            )}
-          </View>
-          <View className="flex w-full items-center justify-center">
-            <View className="h-0.5 bg-black w-8"></View>
-          </View>
-          <View className="flex h-8 items-center justify-between flex-row">
-            <Text>Nro Base</Text>
-            <Text>14</Text>
-          </View>
-          <View className="flex h-8 items-center justify-between flex-row">
-            <Text>Pisos</Text>
-            <Text>2</Text>
-          </View>
-          <View className="mb-2" />
-        </TouchableOpacity>
+            );
+          })
+        ) : (
+          <></>
+        )}
 
-        {quotObj && state == 1 ? (
+        {quotObj && state == QUOT_STATES.ORDER ? (
           <></>
         ) : (
           <TouchableOpacity
@@ -182,19 +188,8 @@ export default function Quot() {
           </TouchableOpacity>
         )}
 
-        {/* <View className="mb-4">
-          <TextInput
-            className="bg-white text-black placeholder-black p-3 rounded-full"
-            placeholder="Teléfono (opcional)"
-            placeholderTextColor="gray"
-            value={phoneNumber}
-            onChangeText={setPhoneNumber}
-            keyboardType="phone-pad"
-          />
-        </View> */}
-
         {/* Save Button */}
-        {quotObj && state == 1 ? (
+        {quotObj && state == QUOT_STATES.ORDER ? (
           <></>
         ) : (
           <View className="absolute bottom-0 right-0 p-4">
@@ -208,7 +203,7 @@ export default function Quot() {
 
         {/* Total Price */}
         <View className="absolute bottom-0 left-0 px-4 py-10">
-          <Text className="text-lg"> Total: S/. 24.00</Text>
+          <Text className="text-lg"> Total: S/. {getTotalPrice().toFixed(2)}</Text>
         </View>
       </SafeAreaView>
     </GestureHandlerRootView>

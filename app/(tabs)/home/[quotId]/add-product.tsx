@@ -17,24 +17,49 @@ import {
   TextInput,
 } from "react-native-gesture-handler";
 import { ProductsData } from "@/constants/DataDummy";
+import { getProducts } from "@/services/productService";
+import { Product } from "@/models";
+import { useOrderProductStore } from "@/store/orderProductStore";
+import { Logger } from "@/utils/logger";
 
-export default function Quot() {
-  const products = ProductsData;
+interface Props {
+  onSubmit: () => { productId: number; quantity: number };
+}
+
+export default function AddOrderProduct({ onSubmit }: Props) {
+  const { orderProducts, addOrderProduct, removeOrderProduct } =
+    useOrderProductStore();
+
+  const [products, setProducts] = useState<Product[]>([]);
   const [selectedId, setSelectedId] = useState<number>(0);
-  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [quantity, setQuantity] = useState<string>("");
 
-  const handleCreateQuot = () => {
+  const handleCreateOrder = () => {
+    addOrderProduct({
+      productId: selectedId,
+      productName: selectedProduct?.name || "",
+      quantity: parseInt(quantity),
+      price: selectedProduct?.price || 0,
+    });
     router.back();
   };
 
-  const handleSelectedProduct = (selectedId: any) => {
+  const handleSelectedProduct = (selectedId: number) => {
     setSelectedId(selectedId);
-    const temp = ProductsData.find((item) => item.id == selectedId);
+    const temp = products.find((item) => item.id === selectedId) || null;
     setSelectedProduct(temp);
   };
 
+  const fetchProducts = async () => {
+    const result = await getProducts();
+    setProducts(result);
+    setSelectedId(result[0].id);
+    setSelectedProduct(result[0])
+  };
+
   useEffect(() => {
+    fetchProducts();
     handleSelectedProduct(0);
   }, []);
 
@@ -44,9 +69,7 @@ export default function Quot() {
         <CustomHeader />
 
         <View className="py-2" />
-
         <Text className="text-2xl font-pbold">Agregar un producto</Text>
-
         <View className="py-2" />
 
         <View className="flex justify-center bg-white rounded-full h-12 mb-2">
@@ -79,32 +102,9 @@ export default function Quot() {
           />
         </View>
 
-        {selectedProduct?.attributes.length > 0 ? (
-          <View className="h-4 flex w-full items-center justify-center mb-2">
-            <View className="h-0.5 bg-black w-8"></View>
-          </View>
-        ) : (
-          <></>
-        )}
-
-        {selectedProduct?.attributes.map((element: any) => {
-          return (
-            <TextInput
-              key={element}
-              // className="flex items-center flex-col bg-white placeholder-black px-4 py-2 rounded-[32px] mb-2"
-              className="flex text-black placeholder-black bg-white px-4 py-2 h-12 rounded-full mb-2"
-              placeholder="Cantidad"
-              placeholderTextColor="gray"
-              value={quantity}
-              onChangeText={setQuantity}
-              keyboardType="number-pad"
-            />
-          );
-        })}
-
         {/* Save Button */}
         <View className="absolute bottom-0 right-0 p-4">
-          <TouchableOpacity onPress={handleCreateQuot}>
+          <TouchableOpacity onPress={handleCreateOrder}>
             <View className="bg-aloha-400 w-16 h-16 rounded-full flex items-center justify-center">
               <Feather name="plus" size={24} color="black" />
             </View>

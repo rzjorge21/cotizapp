@@ -14,7 +14,7 @@ export const createOrder = async (
     let totalPrice = 0;
     const createdOrder = await db.runAsync(
       `
-        INSERT INTO order (clientId, totalPrice, status, createdBy, createdAt, updatedBy, updatedAt) 
+        INSERT INTO "order" (clientId, totalPrice, status, createdBy, createdAt, updatedBy, updatedAt) 
         VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, ?, CURRENT_TIMESTAMP)`,
       [clientId, totalPrice, QUOT_STATES.QUOTATION, "INIT", "INIT"]
     );
@@ -37,7 +37,7 @@ export const createOrder = async (
 
     const result = await db.runAsync(
       `
-        UPDATE order
+        UPDATE "order"
         SET totalPrice = ?, updatedAt = CURRENT_TIMESTAMP
         WHERE id = ?`,
       [totalPrice, orderId]
@@ -54,12 +54,12 @@ export const getOrders = async (state?: QUOT_STATES): Promise<Order[]> => {
   try {
     const db = await getDatabase();
     state
-      ? Logger.log(`📃 Getting all orders.`)
-      : Logger.log(`📃 Getting orders filtered by status: ${state}.`);
+      ? Logger.log(`📃 Getting orders filtered by status: ${state}.`)
+      : Logger.log(`📃 Getting all orders.`);
 
     const query = state
-      ? "SELECT * FROM order WHERE status = ?;"
-      : "SELECT * FROM order;";
+      ? `SELECT * FROM "order" WHERE status = ?;`
+      : `SELECT * FROM "order";`;
     const params = state ? [state] : [];
 
     const result = await db.getAllAsync(query, params);
@@ -96,7 +96,7 @@ export const updateOrder = async (
     let totalPrice = 0;
 
     const createdOrder = await db.getFirstAsync<Order>(
-      "SELECT * FROM order WHERE id = ?;",
+      `SELECT * FROM "order" WHERE id = ?;`,
       [orderId]
     );
 
@@ -125,7 +125,7 @@ export const updateOrder = async (
 
     const result = await db.runAsync(
       `
-        UPDATE order
+        UPDATE "order"
         SET totalPrice = ?, updatedAt = CURRENT_TIMESTAMP
         WHERE id = ?`,
       [totalPrice, orderId]
@@ -163,7 +163,7 @@ export const getOrdersById = async (id: number): Promise<Order | null> => {
     Logger.log(`📃 Getting order with id: ${id}.`);
     const db = await getDatabase();
     const result = await db.getFirstAsync<Order>(
-      "SELECT * FROM order WHERE id = ?;",
+      `SELECT * FROM "order" WHERE id = ?;`,
       [id]
     );
     Logger.log(`📃 Order with id: ${id} returned succesfully.`);
@@ -180,7 +180,7 @@ export const updateStatusToCompleted = async (id: number): Promise<boolean> => {
     const db = await getDatabase();
     const result = await db.runAsync(
       `
-        UPDATE order 
+        UPDATE "order" 
         SET status = ?
         WHERE id = ?`,
       [QUOT_STATES.ORDER, id]
