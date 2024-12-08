@@ -13,11 +13,13 @@ interface OrderProductState {
   orderProducts: OrderProduct[];
   addOrderProduct: (orderProduct: OrderProduct) => void;
   removeOrderProduct: (productId: number) => void;
+  getOrderProductById: (productId: number) => OrderProduct | undefined;
+  updateOrderProductQuantity: (productId: number, quantity: number) => void;
 }
 
 export const useOrderProductStore = create<OrderProductState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       orderProducts: [],
       addOrderProduct: (orderProduct: OrderProduct) =>
         set((state) => {
@@ -44,6 +46,30 @@ export const useOrderProductStore = create<OrderProductState>()(
             (orderProduct) => orderProduct.productId !== productId
           ),
         })),
+      getOrderProductById: (productId: number) => {
+        const state = get();
+        return state.orderProducts.find(
+          (orderProduct) => orderProduct.productId === productId
+        );
+      },
+      updateOrderProductQuantity: (productId: number, quantity: number) =>
+        set((state) => {
+          const existingProductIndex = state.orderProducts.findIndex(
+            (p) => p.productId === productId
+          );
+
+          if (existingProductIndex !== -1) {
+            const updatedOrderProducts = [...state.orderProducts];
+            updatedOrderProducts[existingProductIndex].quantity = quantity;
+
+            return { orderProducts: updatedOrderProducts };
+          } else {
+            console.warn(
+              `Product with productId ${productId} not found for update.`
+            );
+            return state;
+          }
+        }),
     }),
     {
       name: "order-product-storage",

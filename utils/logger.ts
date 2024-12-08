@@ -1,8 +1,9 @@
 import { DEBUG } from "@/config";
 
 export class Logger {
-  static log(content: unknown): void {
+  static log(...contents: unknown[]): void {
     if (!DEBUG) return;
+
     const options: Intl.DateTimeFormatOptions = {
       year: "numeric",
       month: "2-digit",
@@ -16,15 +17,20 @@ export class Logger {
       .toLocaleString("en-GB", options)
       .replace(/-/g, "/");
 
-    let message: string;
-    if (typeof content === "string") {
-      message = content;
-    } else if (typeof content === "object" && content !== null) {
-      message = JSON.stringify(content, null, 2); // Convierte objetos a JSON legible
-    } else {
-      message = String(content); // Convierte otros tipos (number, boolean, etc.) a string
-    }
+    // Procesar todos los argumentos y convertirlos a strings legibles
+    const messages = contents.map((content) => {
+      if (typeof content === "string") {
+        return content;
+      } else if (typeof content === "object" && content !== null) {
+        return JSON.stringify(content, null, 2); // Convierte objetos a JSON legible
+      } else {
+        return String(content); // Convierte otros tipos (number, boolean, etc.) a string
+      }
+    });
 
-    console.log(`- ${timestamp} - ${message}`);
+    // Combinar todos los mensajes en una sola línea
+    const combinedMessage = messages.join(" ");
+
+    console.log(`- ${timestamp} - ${combinedMessage}`);
   }
 }

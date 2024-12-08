@@ -27,15 +27,15 @@ const Home = () => {
 
   const handleCreateQuot = () => {
     router.push({
-      pathname: "/(tabs)/home/[quotId]",
-      params: { quotId: -1 },
+      pathname: "/(tabs)/home/[orderId]",
+      params: { orderId: -1 },
     });
   };
 
   const handleViewQuot = (id: number) => {
     router.push({
-      pathname: "/(tabs)/home/[quotId]",
-      params: { quotId: id },
+      pathname: "/(tabs)/home/[orderId]",
+      params: { orderId: id },
     });
   };
 

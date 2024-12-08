@@ -21,46 +21,75 @@ import { getProducts } from "@/services/productService";
 import { Product } from "@/models";
 import { useOrderProductStore } from "@/store/orderProductStore";
 import { Logger } from "@/utils/logger";
+import {
+  useGlobalSearchParams,
+  useSearchParams,
+} from "expo-router/build/hooks";
 
-interface Props {
-  onSubmit: () => { productId: number; quantity: number };
-}
+export default function AddOrderProduct() {
+  const params = useLocalSearchParams<{ productId?: string }>();
+  const productId = Number(params.productId) || -1;
+  const [isCreating, setIsCreating] = useState(false);
 
-export default function AddOrderProduct({ onSubmit }: Props) {
-  const { orderProducts, addOrderProduct, removeOrderProduct } =
-    useOrderProductStore();
+  const {
+    orderProducts,
+    addOrderProduct,
+    removeOrderProduct,
+    getOrderProductById,
+    updateOrderProductQuantity,
+  } = useOrderProductStore();
 
   const [products, setProducts] = useState<Product[]>([]);
-  const [selectedId, setSelectedId] = useState<number>(0);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedId, setSelectedId] = useState<number>(-1);
   const [quantity, setQuantity] = useState<string>("");
 
   const handleCreateOrder = () => {
-    addOrderProduct({
-      productId: selectedId,
-      productName: selectedProduct?.name || "",
-      quantity: parseInt(quantity),
-      price: selectedProduct?.price || 0,
-    });
-    router.back();
-  };
+    try {
+      if (Number(quantity) <= 0) return; // send toast
 
-  const handleSelectedProduct = (selectedId: number) => {
-    setSelectedId(selectedId);
-    const temp = products.find((item) => item.id === selectedId) || null;
-    setSelectedProduct(temp);
+      if (isCreating) {
+        Logger.log("📦 Creating orderProduct.");
+        const selectedProduct = products.find(
+          (product) => product.id == selectedId
+        );
+        addOrderProduct({
+          productId: selectedId,
+          productName: selectedProduct?.name || "",
+          quantity: Number(quantity),
+          price: selectedProduct?.price || 0,
+        });
+      } else {
+        Logger.log("📦 Updating quantity on orderProduct.");
+        updateOrderProductQuantity(productId, Number(quantity));
+      }
+      router.back();
+    } catch {
+      Logger.log(`❌ Error creating or updating a productOrder.`);
+    }
   };
 
   const fetchProducts = async () => {
     const result = await getProducts();
     setProducts(result);
-    setSelectedId(result[0].id);
-    setSelectedProduct(result[0])
+    return result;
+  };
+
+  const handleSelectedProduct = (selectedId: number) => {
+    const temp = products.find((product) => product.id === selectedId) || null;
+    setSelectedId(selectedId);
   };
 
   useEffect(() => {
-    fetchProducts();
-    handleSelectedProduct(0);
+    fetchProducts().then((products) => {
+      if (productId == -1) {
+        setSelectedId(products[0].id);
+        setIsCreating(true);
+      } else {
+        const _product = getOrderProductById(productId);
+        setQuantity(_product?.quantity.toString() || "");
+        handleSelectedProduct(_product?.productId || 0);
+      }
+    });
   }, []);
 
   return (
@@ -78,13 +107,14 @@ export default function AddOrderProduct({ onSubmit }: Props) {
             onValueChange={(itemValue, itemIndex) => {
               handleSelectedProduct(itemValue);
             }}
+            enabled={isCreating}
           >
-            {products.map((element) => {
+            {products.map((product) => {
               return (
                 <Picker.Item
-                  key={element.id}
-                  label={element.name}
-                  value={element.id}
+                  key={product.id}
+                  label={product.name}
+                  value={product.id}
                 />
               );
             })}

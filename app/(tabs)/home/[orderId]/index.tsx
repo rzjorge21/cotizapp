@@ -16,15 +16,19 @@ import {
   GestureHandlerRootView,
   TextInput,
 } from "react-native-gesture-handler";
-import { ClientsData, QuotsData } from "@/constants/DataDummy";
 import { Client } from "@/models";
 import { getClients } from "@/services/clientService";
 import { useOrderProductStore } from "@/store/orderProductStore";
 import { Logger } from "@/utils/logger";
 import { QUOT_STATES } from "@/config";
+import { getOrdersById } from "@/services/orderService";
+import { useSearchParams } from "expo-router/build/hooks";
 
 export default function Quot() {
-  const { quotId = -1 } = useLocalSearchParams();
+  const searchParams = useSearchParams();
+  const orderId = Number(searchParams.get("productId")) | -1;
+
+  const [isCreating, setIsCreating] = useState(false);
   const { orderProducts, addOrderProduct, removeOrderProduct } =
     useOrderProductStore();
 
@@ -35,41 +39,57 @@ export default function Quot() {
   const [clients, setClients] = useState<Client[]>([]);
   const [selectedClient, setSelectedClient] = useState<number | null>(null);
 
-  const handleCreateQuot = () => {
+  const handleCreateOrder = () => {
+    Logger.log({
+      clientId: selectedClient,
+      items: orderProducts.map((orderProduct) => {
+        return {
+          productId: orderProduct.productId,
+          quantity: orderProduct.quantity,
+        };
+      }),
+    });
+    // router.back();
+  };
+
+  const handlePressBack = () => {
     router.back();
   };
 
   const getTotalPrice = () => {
-    Logger.log(orderProducts)
     return orderProducts.reduce((total, orderProduct) => {
-      Logger.log(total)
       return total + orderProduct.price * orderProduct.quantity;
     }, 0);
   };
 
-  const handleCreateProduct = () => {
+  const handleAddOrderProduct = (productId: number = -1) => {
     router.push({
-      pathname: `/(tabs)/home/${quotId}/add-product`,
+      pathname: "/(tabs)/home/[orderId]/[productId]",
+      params: { orderId, productId },
     });
   };
 
   const fetchClients = async () => {
     const result = await getClients();
     setClients(result);
+    setSelectedClient(result[0].id);
+  };
+
+  const fetchOrder = async () => {
+    if (orderId == -1) {
+      setIsCreating(true);
+      return;
+    }
+    const result = await getOrdersById(orderId);
+    if (result) {
+      setSelectedClient(result.clientId);
+      // orderproduct store agrgar fucnion para inicializar
+    }
   };
 
   useEffect(() => {
     fetchClients();
-  }, []);
-
-  useEffect(() => {
-    const temp = QuotsData.find((item) => item.id.toString() == quotId);
-    if (temp) {
-      setQuotObj(temp);
-      setCode(temp.code);
-      setSelectedClient(temp.clientId);
-      setState(temp.state);
-    }
+    //fetchOrder();
   }, []);
 
   return (
@@ -151,6 +171,9 @@ export default function Quot() {
             return (
               <TouchableOpacity
                 key={orderProduct.productId}
+                onPress={() => {
+                  handleAddOrderProduct(orderProduct.productId);
+                }}
                 className="flex items-center justify-between flex-row bg-white placeholder-black px-4 h-12 rounded-full mb-2"
               >
                 <Text>
@@ -180,7 +203,7 @@ export default function Quot() {
         ) : (
           <TouchableOpacity
             onPress={() => {
-              handleCreateProduct();
+              handleAddOrderProduct();
             }}
             className="flex items-center justify-center bg-black h-14 rounded-full mb-2"
           >
@@ -193,7 +216,7 @@ export default function Quot() {
           <></>
         ) : (
           <View className="absolute bottom-0 right-0 p-4">
-            <TouchableOpacity onPress={handleCreateQuot}>
+            <TouchableOpacity onPress={handleCreateOrder}>
               <View className="bg-aloha-400 w-16 h-16 rounded-full flex items-center justify-center">
                 <Feather name="save" size={24} color="black" />
               </View>
@@ -203,7 +226,10 @@ export default function Quot() {
 
         {/* Total Price */}
         <View className="absolute bottom-0 left-0 px-4 py-10">
-          <Text className="text-lg"> Total: S/. {getTotalPrice().toFixed(2)}</Text>
+          <Text className="text-lg">
+            {" "}
+            Total: S/. {getTotalPrice().toFixed(2)}
+          </Text>
         </View>
       </SafeAreaView>
     </GestureHandlerRootView>

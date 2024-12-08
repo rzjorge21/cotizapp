@@ -7,7 +7,7 @@ export default function HomeLayout() {
     <>
       <Stack initialRouteName="index">
         <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="[quotId]" options={{ headerShown: false }} />
+        <Stack.Screen name="[orderId]" options={{ headerShown: false }} />
       </Stack>
     </>
   );
