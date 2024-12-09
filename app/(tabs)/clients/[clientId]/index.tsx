@@ -19,6 +19,7 @@ import {
 import { ClientsData } from "@/constants/DataDummy";
 import {
   createClient,
+  deleteClient,
   getClientById,
   getClients,
   updateClient,
@@ -109,7 +110,7 @@ export default function ClientScreen() {
       return;
     }
 
-    const phoneRegex = /^[0-9]{9}$/; 
+    const phoneRegex = /^[0-9]{9}$/;
     if (phoneNumber !== "" && !phoneRegex.test(phoneNumber)) {
       ShowError("El número de teléfono no es válido.");
       return;
@@ -120,6 +121,12 @@ export default function ClientScreen() {
     } else {
       handleUpdateClient();
     }
+  };
+
+  const handleDeleteClient = async () => {
+    await deleteClient(Number(clientId)).then(() => {
+      router.back();
+    });
   };
 
   useEffect(() => {
@@ -137,7 +144,10 @@ export default function ClientScreen() {
                 {/* <TouchableOpacity className="rounded-full w-11 h-11 bg-white flex justify-center items-center">
                   <Feather name="file-plus" size={20} color="black" />
                 </TouchableOpacity> */}
-                <TouchableOpacity className="rounded-full w-11 h-11 bg-black flex justify-center items-center">
+                <TouchableOpacity
+                  onPress={handleDeleteClient}
+                  className="rounded-full w-11 h-11 bg-black flex justify-center items-center"
+                >
                   <Feather name="trash" size={20} color="white" />
                 </TouchableOpacity>
               </View>

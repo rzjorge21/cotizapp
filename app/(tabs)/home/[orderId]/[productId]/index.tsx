@@ -136,8 +136,16 @@ export default function AddOrderProduct() {
             placeholder="Cantidad"
             placeholderTextColor="gray"
             value={quantity}
-            onChangeText={setQuantity}
-            keyboardType="number-pad"
+            onChangeText={(e) => {
+              const sanitizedValue = e.replace(",", ".");
+              const numericValue = parseFloat(sanitizedValue);
+              if (!isNaN(numericValue)) {
+                setQuantity(numericValue.toString());
+              } else {
+                setQuantity("");
+              }
+            }}
+            keyboardType="decimal-pad"
           />
         </View>
 

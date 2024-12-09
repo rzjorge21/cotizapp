@@ -7,8 +7,10 @@ import { router, useFocusEffect } from "expo-router";
 import { QUOT_STATES } from "@/config";
 import { getOrders } from "@/services/orderService";
 import { GetOrderDTO, Product } from "@/models";
-import { getProducts } from "@/services/productService";
+import { getProducts, hasProducts } from "@/services/productService";
 import { Logger } from "@/utils/logger";
+import { hasClients } from "@/services/clientService";
+import { ShowError } from "@/utils/toast";
 
 const Home = () => {
   const chips = [
@@ -23,12 +25,21 @@ const Home = () => {
 
   const [orders, setOrders] = useState<GetOrderDTO[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [_hasClients, _setHasClients] = useState<boolean>(false);
+  const [_hasProducts, _setHasProducts] = useState<boolean>(false);
 
   const handleCreateQuot = () => {
-    router.push({
-      pathname: "/(tabs)/home/[orderId]",
-      params: { orderId: -1 },
-    });
+    if (_hasClients && _hasProducts) {
+      router.push({
+        pathname: "/(tabs)/home/[orderId]",
+        params: { orderId: -1 },
+      });
+    } else {
+      let errorMessage = "";
+      errorMessage += _hasClients ? "" : "Debe tener al menos un cliente creado.\n";
+      errorMessage += _hasProducts ? "" : "Debe tener al menos un producto creado.\n";
+      ShowError(errorMessage.trim());
+    }
   };
 
   const handleViewQuot = (id: number) => {
@@ -58,10 +69,22 @@ const Home = () => {
     setProducts(result);
   };
 
+  const fetchHasClients = async () => {
+    const result = await hasClients();
+    _setHasClients(result);
+  };
+
+  const fetchHasProducts = async () => {
+    const result = await hasProducts();
+    _setHasProducts(result);
+  };
+
   useFocusEffect(
     useCallback(() => {
       fetchOrders();
       fetchProducts();
+      fetchHasClients();
+      fetchHasProducts();
     }, [])
   );
 

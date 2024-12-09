@@ -30,6 +30,7 @@ import {
 } from "@/services/orderService";
 import { useRouter, useSearchParams } from "expo-router/build/hooks";
 import { BackHandler } from "react-native";
+import { ShowError } from "@/utils/toast";
 
 export default function Quot() {
   const params = useLocalSearchParams<{ orderId?: string }>();
@@ -52,6 +53,11 @@ export default function Quot() {
   const [selectedClient, setSelectedClient] = useState<number | null>(null);
 
   const handleSaveOrder = async () => {
+    if (orderProducts.length == 0) {
+      ShowError("La cotización tiene que tener al menos 1 producto.");
+      return;
+    }
+
     const payload = {
       clientId: selectedClient || 1,
       items: orderProducts.map((orderProduct) => {

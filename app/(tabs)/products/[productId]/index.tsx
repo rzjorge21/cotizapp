@@ -14,6 +14,7 @@ import { ProductsData } from "@/constants/DataDummy";
 import { Product } from "@/models";
 import {
   createProduct,
+  deleteProduct,
   getProductById,
   updateProduct,
 } from "@/services/productService";
@@ -91,6 +92,12 @@ export default function ProductScreen() {
     }
   };
 
+  const handleDeleteProduct = async () => {
+    await deleteProduct(Number(productId)).then(() => {
+      router.back();
+    });
+  };
+
   useEffect(() => {
     getProductData();
   }, []);
@@ -102,7 +109,10 @@ export default function ProductScreen() {
           rightElement={
             productObj ? (
               <View className="flex flex-row gap-2">
-                <TouchableOpacity className="rounded-full w-11 h-11 bg-black flex justify-center items-center">
+                <TouchableOpacity
+                  onPress={handleDeleteProduct}
+                  className="rounded-full w-11 h-11 bg-black flex justify-center items-center"
+                >
                   <Feather name="trash" size={20} color="white" />
                   {/* <Feather name="download" size={24} color="#d45f77" /> */}
                 </TouchableOpacity>
