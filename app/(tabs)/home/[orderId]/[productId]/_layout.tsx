@@ -6,12 +6,6 @@ import { useUIStore } from "@/store/uiStore";
 export default function QuotLayout() {
   const {showTabBar, hideTabBar} = useUIStore()
   
-  // Ocultar tab bar al crearse el componente
-  // useEffect(() => {
-  //   hideTabBar();
-  //   return () => { showTabBar() }; // Mostrar tab bar al destruirse el componente
-  // }, []);
-  
   return (
     <>
       <Stack initialRouteName="index">

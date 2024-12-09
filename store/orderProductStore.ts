@@ -15,6 +15,8 @@ interface OrderProductState {
   removeOrderProduct: (productId: number) => void;
   getOrderProductById: (productId: number) => OrderProduct | undefined;
   updateOrderProductQuantity: (productId: number, quantity: number) => void;
+  setOrderProducts: (products: OrderProduct[]) => void;
+  clearOrderProducts: () => void;
 }
 
 export const useOrderProductStore = create<OrderProductState>()(
@@ -70,6 +72,14 @@ export const useOrderProductStore = create<OrderProductState>()(
             return state;
           }
         }),
+      setOrderProducts: (products: OrderProduct[]) =>
+        set(() => ({
+          orderProducts: products, // Sobreescribe los productos actuales
+        })),
+      clearOrderProducts: () =>
+        set(() => ({
+          orderProducts: [], // Limpia todos los productos
+        })),
     }),
     {
       name: "order-product-storage",

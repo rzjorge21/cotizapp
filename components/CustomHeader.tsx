@@ -7,12 +7,14 @@ type Props = {
   title?: string;
   rightElement?: React.ReactNode;
   otherStyles?: string;
+  onBackPress?: () => void;
 };
 
 export default function CustomHeader({
   title,
   rightElement,
   otherStyles,
+  onBackPress,
 }: Props) {
   return (
     <View className={`flex flex-row items-center ${otherStyles}`}>
@@ -20,6 +22,9 @@ export default function CustomHeader({
         <TouchableOpacity
           className="rounded-full w-11 h-11 bg-white flex justify-center items-center"
           onPress={() => {
+            if (onBackPress) {
+              onBackPress();
+            }
             router.back();
           }}
         >

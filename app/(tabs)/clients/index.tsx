@@ -28,7 +28,6 @@ const Header = ({ handleCreateClient }: { handleCreateClient: () => void }) => (
 );
 
 const Clients = () => {
-  // const clients = ClientsData;
   const [clients, setClients] = useState<Client[]>([]);
 
   const handleCreateClient = () => {
@@ -80,7 +79,6 @@ const Clients = () => {
                           height: "100%",
                           borderRadius: 999,
                         }}
-                        // resizeMode="cover"
                       />
                     ) : (
                       <Text className="text-2xl">{element.name[0]}</Text>

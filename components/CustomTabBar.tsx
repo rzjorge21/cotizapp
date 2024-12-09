@@ -9,7 +9,7 @@ const CustomTabBar: React.FC<BottomTabBarProps> = (props: BottomTabBarProps) => 
     return null;
   }
 
-  return <BottomTabBar {...props} />;
+  return <BottomTabBar {...props}/>;
 };
 
 export default CustomTabBar;

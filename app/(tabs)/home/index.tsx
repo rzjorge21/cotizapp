@@ -1,13 +1,14 @@
 import { Feather } from "@expo/vector-icons";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useCallback, useState } from "react";
 import { QuotsData } from "../../../constants/DataDummy";
 import { router, useFocusEffect } from "expo-router";
 import { QUOT_STATES } from "@/config";
 import { getOrders } from "@/services/orderService";
-import { Order, Product } from "@/models";
+import { GetOrderDTO, Product } from "@/models";
 import { getProducts } from "@/services/productService";
+import { Logger } from "@/utils/logger";
 
 const Home = () => {
   const chips = [
@@ -20,10 +21,8 @@ const Home = () => {
     chips[0]
   );
 
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<GetOrderDTO[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
-
-  const [filteredOrders, setFilteredOrders] = useState(orders);
 
   const handleCreateQuot = () => {
     router.push({
@@ -43,6 +42,7 @@ const Home = () => {
     const selectedChip = chips.find((chip) => chip.id === id);
     if (selectedChip) {
       setChoiceChip(selectedChip);
+      fetchOrders(selectedChip.state);
     } else {
       console.error(`Chip with id ${id} not found`);
     }
@@ -108,7 +108,7 @@ const Home = () => {
 
         <View className="my-2"></View>
 
-        {filteredOrders.map((order) => {
+        {orders.map((order) => {
           return (
             <TouchableOpacity
               onPress={() => {
@@ -119,7 +119,19 @@ const Home = () => {
             >
               <View className="flex flex-row">
                 <View className="flex items-center justify-center h-full aspect-square bg-aloha-100 rounded-full">
-                  <Text className="text-2xl">A</Text>
+                  {order.clientImageUri ? (
+                    <Image
+                      source={{ uri: order.clientImageUri }}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        borderRadius: 999,
+                      }}
+                    />
+                  ) : (
+                    <Text className="text-2xl">{order.clientName[0]}</Text>
+                  )}
+                  {/* <Text className="text-2xl">A</Text> */}
                 </View>
                 <View className="flex justify-center">
                   <Text className="ml-2 text-lg"># {order.id}</Text>
@@ -127,8 +139,12 @@ const Home = () => {
               </View>
               <View className="flex flex-row items-center">
                 <View className="flex flex-col mr-2">
-                  <Text className="text-right text-xl">{order.totalPrice}</Text>
-                  <Text className="text-right text-sm">{order.createdAt}</Text>
+                  <Text className="text-right text-xl">
+                    S/. {order.totalPrice}
+                  </Text>
+                  <Text className="text-right text-sm">
+                    {new Date(order.createdAt).toDateString()}
+                  </Text>
                 </View>
                 <View
                   className={

@@ -87,3 +87,8 @@ export interface OrderProduct {
   updatedAt: string;
   deletedAt?: string;
 }
+
+export interface GetOrderDTO extends Order{
+  clientName: string;
+  clientImageUri? : string;
+}

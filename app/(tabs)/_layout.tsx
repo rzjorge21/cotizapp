@@ -9,7 +9,7 @@ import { StatusBar } from "expo-status-bar";
 const TabIcon = ({ icon, color, name, focused }: any) => {
   return (
     <View
-      className="flex items-center justify-center w-12 h-12 rounded-full"
+      className="flex items-center justify-center w-12 h-12 rounded-full self-center mt-4"
       style={{ backgroundColor: color }}
     >
       <Feather name={icon} size={24} color={focused ? "black" : "#888989"} />
@@ -34,15 +34,14 @@ const TabsLayout = () => {
           tabBarInactiveTintColor: "#19191A",
           tabBarStyle: {
             // position: "absolute",
-            backgroundColor: "#1E1F1F",
-            borderRadius: 999,
-            borderTopWidth: 0,
-            bottom: 12,
-            height: 54,
-            paddingHorizontal: 2,
-            width: 200,
             // left: "50%",
             // transform: [{ translateX: -100 }],
+            backgroundColor: "#1E1F1F",
+            borderRadius: 999,
+            bottom: 12,
+            height: 56,
+            width: 210,
+            paddingHorizontal: 2,
             alignSelf: "center",
           },
         }}

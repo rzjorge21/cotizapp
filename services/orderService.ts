@@ -1,6 +1,6 @@
 import { Logger } from "@/utils/logger";
 import { getDatabase } from "../lib/sqlite/database";
-import { Order, Product } from "../models";
+import { GetOrderDTO, Order, Product } from "../models";
 import { QUOT_STATES } from "@/config";
 import { getProductById } from "./productService";
 
@@ -20,10 +20,10 @@ export const createOrder = async (
     );
     const orderId = createdOrder.lastInsertRowId;
 
-    items.forEach(async (item) => {
+    for (const item of items) {
       const product: Product | null = await getProductById(item.productId);
       if (product) {
-        totalPrice += product.price * item.quantity;
+        totalPrice = totalPrice + product.price * item.quantity;
         await db.runAsync(
           `
             INSERT INTO order_product (orderId, productId, quantity, createdBy, createdAt, updatedBy, updatedAt) 
@@ -33,7 +33,7 @@ export const createOrder = async (
       } else {
         throw Error;
       }
-    });
+    }
 
     const result = await db.runAsync(
       `
@@ -50,7 +50,9 @@ export const createOrder = async (
   }
 };
 
-export const getOrders = async (state?: QUOT_STATES): Promise<Order[]> => {
+export const getOrders = async (
+  state?: QUOT_STATES
+): Promise<GetOrderDTO[]> => {
   try {
     const db = await getDatabase();
     state
@@ -58,13 +60,22 @@ export const getOrders = async (state?: QUOT_STATES): Promise<Order[]> => {
       : Logger.log(`📃 Getting all orders.`);
 
     const query = state
-      ? `SELECT * FROM "order" WHERE status = ?;`
-      : `SELECT * FROM "order";`;
+      ? `SELECT o.*, c.name AS clientName, c.imageUri AS clientImageUri 
+         FROM "order" o 
+         LEFT JOIN "client" c ON o.clientId = c.id 
+         WHERE o.status = ? 
+         AND o.deletedAt IS NULL
+         ORDER BY o.createdAt DESC;`
+      : `SELECT o.*, c.name AS clientName, c.imageUri AS clientImageUri 
+         FROM "order" o 
+         LEFT JOIN "client" c ON o.clientId = c.id 
+         WHERE o.deletedAt IS NULL
+         ORDER BY o.createdAt DESC;`;
     const params = state ? [state] : [];
 
     const result = await db.getAllAsync(query, params);
 
-    const orders: Order[] = await Promise.all(
+    const orders: GetOrderDTO[] = await Promise.all(
       result.map(async (row: any) => ({
         id: row.id,
         clientId: row.clientId,
@@ -75,6 +86,8 @@ export const getOrders = async (state?: QUOT_STATES): Promise<Order[]> => {
         updatedBy: row.updatedBy,
         updatedAt: row.updatedAt,
         deletedAt: row.deletedAt,
+        clientName: row.clientName,
+        clientImageUri: row.clientImageUri || null, // Manejo de valores opcionales
       }))
     );
     Logger.log(`📃 Orders returned succesfully.`);
@@ -108,10 +121,10 @@ export const updateOrder = async (
     // Deleting past order products
     await db.runAsync(`DELETE FROM order_product WHERE orderId = ?`, [orderId]);
 
-    items.forEach(async (item) => {
+    for (const item of items) {
       const product: Product | null = await getProductById(item.productId);
       if (product) {
-        totalPrice += product.price * item.quantity;
+        totalPrice = totalPrice + product.price * item.quantity;
         await db.runAsync(
           `
             INSERT INTO order_product (orderId, productId, quantity, createdBy, createdAt, updatedBy, updatedAt) 
@@ -121,14 +134,14 @@ export const updateOrder = async (
       } else {
         throw Error;
       }
-    });
+    }
 
     const result = await db.runAsync(
       `
         UPDATE "order"
-        SET totalPrice = ?, updatedAt = CURRENT_TIMESTAMP
+        SET totalPrice = ?, updatedAt = CURRENT_TIMESTAMP, clientId = ?
         WHERE id = ?`,
-      [totalPrice, orderId]
+      [totalPrice, clientId, orderId]
     );
 
     Logger.log(`📃 Order updated succesfully.`);
@@ -158,16 +171,55 @@ export const deleteOrder = async (id: number): Promise<boolean> => {
   }
 };
 
-export const getOrdersById = async (id: number): Promise<Order | null> => {
+export const getOrderById = async (
+  id: number
+): Promise<
+  | (Order & {
+      items: {
+        productId: number;
+        productName: string;
+        quantity: number;
+        price: number;
+      }[];
+    })
+  | null
+> => {
   try {
     Logger.log(`📃 Getting order with id: ${id}.`);
     const db = await getDatabase();
-    const result = await db.getFirstAsync<Order>(
+
+    // Obtener la orden
+    const order = await db.getFirstAsync<Order>(
       `SELECT * FROM "order" WHERE id = ?;`,
       [id]
     );
-    Logger.log(`📃 Order with id: ${id} returned succesfully.`);
-    return result;
+
+    if (!order) {
+      Logger.log(`📃 No order found with id: ${id}.`);
+      return null;
+    }
+
+    // Obtener los productos asociados a la orden con JOIN para incluir productName y price
+    const items = await db.getAllAsync<{
+      productId: number;
+      productName: string;
+      price: number;
+      quantity: number;
+    }>(
+      `
+      SELECT p.id AS productId, p.name AS productName, p.price, op.quantity
+      FROM order_product op
+      JOIN product p ON op.productId = p.id
+      WHERE op.orderId = ?;
+      `,
+      [id]
+    );
+
+    Logger.log(`📃 Order with id: ${id} and items returned successfully.`);
+    return {
+      ...order,
+      items,
+    };
   } catch (error) {
     Logger.log(`❌ Error getting order with id: ${id}. Error: ${error}`);
     return null;

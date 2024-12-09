@@ -21,39 +21,66 @@ import { getClients } from "@/services/clientService";
 import { useOrderProductStore } from "@/store/orderProductStore";
 import { Logger } from "@/utils/logger";
 import { QUOT_STATES } from "@/config";
-import { getOrdersById } from "@/services/orderService";
-import { useSearchParams } from "expo-router/build/hooks";
+import {
+  createOrder,
+  deleteOrder,
+  getOrderById,
+  updateOrder,
+  updateStatusToCompleted,
+} from "@/services/orderService";
+import { useRouter, useSearchParams } from "expo-router/build/hooks";
+import { BackHandler } from "react-native";
 
 export default function Quot() {
-  const searchParams = useSearchParams();
-  const orderId = Number(searchParams.get("productId")) | -1;
+  const params = useLocalSearchParams<{ orderId?: string }>();
+  const orderId = Number(params.orderId) || -1;
+  const router = useRouter();
 
   const [isCreating, setIsCreating] = useState(false);
-  const { orderProducts, addOrderProduct, removeOrderProduct } =
-    useOrderProductStore();
+  const {
+    orderProducts,
+    addOrderProduct,
+    removeOrderProduct,
+    setOrderProducts,
+    clearOrderProducts,
+  } = useOrderProductStore();
 
-  const [quotObj, setQuotObj] = useState<object | null>(null);
   const [code, setCode] = useState("");
   const [state, setState] = useState(QUOT_STATES.QUOTATION);
 
   const [clients, setClients] = useState<Client[]>([]);
   const [selectedClient, setSelectedClient] = useState<number | null>(null);
 
-  const handleCreateOrder = () => {
-    Logger.log({
-      clientId: selectedClient,
+  const handleSaveOrder = async () => {
+    const payload = {
+      clientId: selectedClient || 1,
       items: orderProducts.map((orderProduct) => {
         return {
           productId: orderProduct.productId,
           quantity: orderProduct.quantity,
         };
       }),
-    });
-    // router.back();
+    };
+
+    isCreating
+      ? await createOrder(payload.clientId, payload.items)
+      : await updateOrder(orderId, payload.clientId, payload.items);
+
+    handlePressBack();
   };
 
-  const handlePressBack = () => {
-    router.back();
+  const handleDeleteOrder = async () => {
+    await deleteOrder(orderId).then(() => {
+      handlePressBack();
+    });
+  };
+
+  const handleUpdateStatusToCompleted = async () => {
+    await handleSaveOrder().then(async () => {
+      await updateStatusToCompleted(orderId).then(() => {
+        fetchOrder();
+      });
+    });
   };
 
   const getTotalPrice = () => {
@@ -72,41 +99,66 @@ export default function Quot() {
   const fetchClients = async () => {
     const result = await getClients();
     setClients(result);
-    setSelectedClient(result[0].id);
+    return result;
   };
 
   const fetchOrder = async () => {
-    if (orderId == -1) {
-      setIsCreating(true);
-      return;
-    }
-    const result = await getOrdersById(orderId);
+    if (isCreating) return;
+    const result = await getOrderById(orderId);
     if (result) {
       setSelectedClient(result.clientId);
-      // orderproduct store agrgar fucnion para inicializar
+      setOrderProducts(result.items);
+      setState(result.status);
     }
   };
 
+  const handlePressBack = () => {
+    clearOrderProducts();
+    router.back();
+    return true;
+  };
+
+  BackHandler.addEventListener("hardwareBackPress", handlePressBack);
+
   useEffect(() => {
-    fetchClients();
-    //fetchOrder();
-  }, []);
+    fetchClients().then((clients) => {
+      if (orderId == -1) {
+        setSelectedClient(clients[0].id);
+        setIsCreating(true);
+      } else {
+        const _order = fetchOrder();
+      }
+    });
+    fetchOrder();
+
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", handlePressBack);
+    };
+  }, [router]);
 
   return (
     <GestureHandlerRootView>
       <SafeAreaView className="min-h-full p-4 relative">
         <CustomHeader
+          onBackPress={() => {
+            clearOrderProducts();
+          }}
           rightElement={
             <>
-              {quotObj ? (
+              {!isCreating ? (
                 <View className="flex flex-row gap-2">
-                  <TouchableOpacity className="rounded-full w-11 h-11 bg-white flex justify-center items-center">
+                  {/* <TouchableOpacity className="rounded-full w-11 h-11 bg-white flex justify-center items-center">
                     <Feather name="download" size={20} color="black" />
                   </TouchableOpacity>
                   <TouchableOpacity className="rounded-full w-11 h-11 bg-white flex justify-center items-center">
                     <Feather name="share-2" size={20} color="black" />
-                  </TouchableOpacity>
-                  <TouchableOpacity className="rounded-full w-11 h-11 bg-black flex justify-center items-center">
+                  </TouchableOpacity> */}
+                  <TouchableOpacity
+                    onPress={() => {
+                      handleDeleteOrder();
+                    }}
+                    className="rounded-full w-11 h-11 bg-black flex justify-center items-center"
+                  >
                     <Feather name="trash" size={20} color="white" />
                   </TouchableOpacity>
                 </View>
@@ -118,11 +170,16 @@ export default function Quot() {
         />
 
         <View className="py-2" />
-        {quotObj ? (
+        {!isCreating ? (
           <View className="flex flex-row justify-between">
             <Text className="text-2xl font-pbold">Ver Cotización</Text>
             {state == QUOT_STATES.QUOTATION ? (
-              <TouchableOpacity className="flex justify-center items-center bg-aloha-300 rounded-full px-5">
+              <TouchableOpacity
+                onPress={() => {
+                  handleUpdateStatusToCompleted();
+                }}
+                className="flex justify-center items-center bg-aloha-300 rounded-full px-5"
+              >
                 <Text className="text-xs font-pbold">Cotización</Text>
               </TouchableOpacity>
             ) : (
@@ -138,28 +195,23 @@ export default function Quot() {
         <View className="py-2" />
 
         <View className="flex justify-center bg-white rounded-full h-12">
-          {quotObj && state == QUOT_STATES.ORDER ? (
-            <Text className="px-4">
-              {clients.find((client) => client.id === selectedClient)?.name}
-            </Text>
-          ) : (
-            <Picker
-              selectedValue={selectedClient}
-              onValueChange={(itemValue, itemIndex) =>
-                setSelectedClient(itemValue)
-              }
-            >
-              {clients.map((element) => {
-                return (
-                  <Picker.Item
-                    key={element.id}
-                    label={element.name}
-                    value={element.id}
-                  />
-                );
-              })}
-            </Picker>
-          )}
+          <Picker
+            selectedValue={selectedClient}
+            onValueChange={(itemValue, itemIndex) =>
+              setSelectedClient(itemValue)
+            }
+            enabled={!(state == QUOT_STATES.ORDER)}
+          >
+            {clients.map((element) => {
+              return (
+                <Picker.Item
+                  key={element.id}
+                  label={element.name}
+                  value={element.id}
+                />
+              );
+            })}
+          </Picker>
         </View>
 
         <View className="h-4 flex w-full items-center justify-center">
@@ -170,16 +222,19 @@ export default function Quot() {
           orderProducts.map((orderProduct, index) => {
             return (
               <TouchableOpacity
+                disabled={!isCreating && state == QUOT_STATES.ORDER}
                 key={orderProduct.productId}
                 onPress={() => {
                   handleAddOrderProduct(orderProduct.productId);
                 }}
                 className="flex items-center justify-between flex-row bg-white placeholder-black px-4 h-12 rounded-full mb-2"
               >
-                <Text>
+                <Text
+                  className={state == QUOT_STATES.ORDER ? "text-zinc-400" : ""}
+                >
                   {orderProduct.quantity} und - {orderProduct.productName}
                 </Text>
-                {quotObj && state == QUOT_STATES.ORDER ? (
+                {!isCreating && state == QUOT_STATES.ORDER ? (
                   <></>
                 ) : (
                   <TouchableOpacity
@@ -198,7 +253,7 @@ export default function Quot() {
           <></>
         )}
 
-        {quotObj && state == QUOT_STATES.ORDER ? (
+        {!isCreating && state == QUOT_STATES.ORDER ? (
           <></>
         ) : (
           <TouchableOpacity
@@ -212,11 +267,11 @@ export default function Quot() {
         )}
 
         {/* Save Button */}
-        {quotObj && state == QUOT_STATES.ORDER ? (
+        {!isCreating && state == QUOT_STATES.ORDER ? (
           <></>
         ) : (
           <View className="absolute bottom-0 right-0 p-4">
-            <TouchableOpacity onPress={handleCreateOrder}>
+            <TouchableOpacity onPress={handleSaveOrder}>
               <View className="bg-aloha-400 w-16 h-16 rounded-full flex items-center justify-center">
                 <Feather name="save" size={24} color="black" />
               </View>
