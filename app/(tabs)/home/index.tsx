@@ -138,7 +138,7 @@ const Home = () => {
                 handleViewQuot(order.id);
               }}
               key={order.id}
-              className="flex flex-row justify-between w-full bg-white rounded-full h-16 p-1 my-0.5"
+              className="flex flex-row justify-between w-full bg-white rounded-full h-16 p-1 my-1"
             >
               <View className="flex flex-row">
                 <View className="flex items-center justify-center h-full aspect-square bg-aloha-100 rounded-full">
