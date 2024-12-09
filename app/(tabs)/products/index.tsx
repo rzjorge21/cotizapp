@@ -79,7 +79,7 @@ const Products = () => {
                   <View className="h-[1px] bg-black w-3"></View>
                 </View>
                 <View className="flex flex-row justify-center items-end gap-2 mr-2">
-                  <Text className="text-sm">S/.{element.price}</Text>
+                  <Text className="text-sm">S/.{element.price?.toFixed(2)}</Text>
                   <Text className="text-xs">Precio</Text>
                 </View>
               </TouchableOpacity>

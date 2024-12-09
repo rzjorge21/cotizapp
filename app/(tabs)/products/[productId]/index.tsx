@@ -17,6 +17,7 @@ import {
   getProductById,
   updateProduct,
 } from "@/services/productService";
+import { ShowError } from "@/utils/toast";
 
 export default function ProductScreen() {
   const { productId = 0 } = useLocalSearchParams();
@@ -25,7 +26,7 @@ export default function ProductScreen() {
   const [productObj, setProductObj] = useState<Product | null>(null);
 
   const [name, setName] = useState("");
-  const [basePrice, setBasePrice] = useState(0);
+  const [basePrice, setBasePrice] = useState("");
 
   const getProductData = async () => {
     if (Number(productId) == -1) {
@@ -37,7 +38,7 @@ export default function ProductScreen() {
     if (temp) {
       setProductObj(temp);
       setName(temp.name || "");
-      setBasePrice(temp.price);
+      setBasePrice(temp.price.toString());
     }
   };
 
@@ -47,7 +48,7 @@ export default function ProductScreen() {
       "id" | "createdAt" | "updatedAt" | "deletedAt"
     > = {
       name: name,
-      price: basePrice,
+      price: parseFloat(basePrice),
       createdBy: "DEV",
     };
     const res = await createProduct(product);
@@ -60,7 +61,7 @@ export default function ProductScreen() {
       "id" | "createdAt" | "updatedAt" | "deletedAt"
     > = {
       name: name,
-      price: basePrice,
+      price: parseFloat(basePrice),
       createdBy: "DEV",
     };
     const res = await updateProduct(Number(productId), product);
@@ -68,6 +69,21 @@ export default function ProductScreen() {
   };
 
   const handleSaveButton = async () => {
+    if (name === "") {
+      ShowError("Nombre del producto no puede ser nulo.");
+      return;
+    }
+
+    if (basePrice === "") {
+      ShowError("El precio no puede ser nulo.");
+      return;
+    }
+
+    if (parseFloat(basePrice) < 0) {
+      ShowError("El precio no puede ser menor a 0.");
+      return;
+    }
+
     if (isCreating) {
       handleCreateProduct();
     } else {
@@ -123,9 +139,15 @@ export default function ProductScreen() {
             placeholderTextColor="gray"
             value={basePrice.toString()}
             onChangeText={(e) => {
-              setBasePrice(Number(e));
+              const sanitizedValue = e.replace(",", ".");
+              const numericValue = parseFloat(sanitizedValue);
+              if (!isNaN(numericValue)) {
+                setBasePrice(numericValue.toString());
+              } else {
+                setBasePrice("");
+              }
             }}
-            keyboardType="phone-pad"
+            keyboardType="decimal-pad"
           />
         </View>
       </ScrollView>
