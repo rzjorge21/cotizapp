@@ -82,11 +82,22 @@ export default function Quot() {
   };
 
   const handleUpdateStatusToCompleted = async () => {
-    await handleSaveOrder().then(async () => {
-      await updateStatusToCompleted(orderId).then(() => {
-        fetchOrder();
-      });
-    });
+    const payload = {
+      clientId: selectedClient || 1,
+      items: orderProducts.map((orderProduct) => {
+        return {
+          productId: orderProduct.productId,
+          quantity: orderProduct.quantity,
+        };
+      }),
+    };
+    await updateOrder(orderId, payload.clientId, payload.items).then(
+      async () => {
+        await updateStatusToCompleted(orderId).then(() => {
+          fetchOrder();
+        });
+      }
+    );
   };
 
   const getTotalPrice = () => {
