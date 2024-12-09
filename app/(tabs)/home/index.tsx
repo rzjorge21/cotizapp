@@ -154,7 +154,6 @@ const Home = () => {
                   ) : (
                     <Text className="text-2xl">{order.clientName[0]}</Text>
                   )}
-                  {/* <Text className="text-2xl">A</Text> */}
                 </View>
                 <View className="flex justify-center">
                   <Text className="ml-2 text-lg"># {order.id}</Text>
@@ -163,7 +162,7 @@ const Home = () => {
               <View className="flex flex-row items-center">
                 <View className="flex flex-col mr-2">
                   <Text className="text-right text-xl">
-                    S/. {order.totalPrice}
+                    S/. {order.totalPrice?.toFixed(2)}
                   </Text>
                   <Text className="text-right text-sm">
                     {new Date(order.createdAt).toDateString()}
@@ -173,7 +172,7 @@ const Home = () => {
                   className={
                     order.status == QUOT_STATES.QUOTATION
                       ? "h-full aspect-[1/2] bg-aloha-300 rounded-r-full"
-                      : "h-full aspect-[1/2] bg-aloha-400 rounded-r-full"
+                      : "h-full aspect-[1/2] bg-aloha-700 rounded-r-full"
                   }
                 />
               </View>
