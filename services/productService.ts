@@ -28,7 +28,7 @@ export const getProducts = async (): Promise<Product[]> => {
   try {
     Logger.log("📦 Retrieving all products.");
     const db = await getDatabase();
-    const result = await db.getAllAsync(`SELECT * FROM product;`);
+    const result = await db.getAllAsync(`SELECT * FROM product WHERE deletedAt IS NULL;`);
 
     const products: Product[] = await Promise.all(
       result.map(async (row: any) => {
@@ -113,3 +113,20 @@ export const getProductById = async (id: number): Promise<Product | null> => {
     return null;
   }
 };
+
+export const hasProducts = async (): Promise<boolean> => {
+  try {
+    Logger.log(`📦 Checking if has products.`);
+    const db = await getDatabase();
+    const result = await db.getFirstAsync<Product>(
+      "SELECT * FROM product WHERE deletedAt IS NULL LIMIT 1;"
+    );
+
+    const temp = result !== null && result !== undefined;
+    Logger.log(`✅ Products check result: ${temp}`);
+    return temp;
+  } catch (error) {
+    Logger.log(`❌ Error retrieving if user has products. Error: ${error}`);
+    return false;
+  }
+}

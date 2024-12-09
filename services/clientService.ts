@@ -34,7 +34,7 @@ export const getClients = async (): Promise<Client[]> => {
   try {
     Logger.log("👤 Retrieving all clients.");
     const db = await getDatabase();
-    const result = await db.getAllAsync("SELECT * FROM client;");
+    const result = await db.getAllAsync("SELECT * FROM client WHERE deletedAt IS NULL;");
     const clients: Client[] = result.map((row: any) => ({
       id: row.id,
       name: row.name,
@@ -119,3 +119,20 @@ export const getClientById = async (id: number): Promise<Client | null> => {
     return null;
   }
 };
+
+export const hasClients = async (): Promise<boolean> => {
+  try {
+    Logger.log(`👤 Checking if has clients.`);
+    const db = await getDatabase();
+    const result = await db.getFirstAsync<Client>(
+      "SELECT * FROM client WHERE deletedAt IS NULL LIMIT 1;"
+    );
+
+    const temp = result !== null && result !== undefined;
+    Logger.log(`👤 Products check result: ${temp}`);
+    return temp;
+  } catch (error) {
+    Logger.log(`❌ Error retrieving if user has clients. Error: ${error}`);
+    return false;
+  }
+}

@@ -25,6 +25,7 @@ import {
   useGlobalSearchParams,
   useSearchParams,
 } from "expo-router/build/hooks";
+import { ShowError } from "@/utils/toast";
 
 export default function AddOrderProduct() {
   const params = useLocalSearchParams<{ productId?: string }>();
@@ -45,7 +46,15 @@ export default function AddOrderProduct() {
 
   const handleCreateOrder = () => {
     try {
-      if (Number(quantity) <= 0) return; // send toast
+      if (quantity === "") {
+        ShowError("La cantidad no puede ser nula.");
+        return;
+      }
+
+      if (Number(quantity) <= 0) {
+        ShowError("El cantidad no puede ser menor o igual a 0.");
+        return;
+      }
 
       if (isCreating) {
         Logger.log("📦 Creating orderProduct.");
