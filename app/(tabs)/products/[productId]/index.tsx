@@ -19,6 +19,7 @@ import {
   updateProduct,
 } from "@/services/productService";
 import { ShowError } from "@/utils/toast";
+import { Logger } from "@/utils/logger";
 
 export default function ProductScreen() {
   const { productId = 0 } = useLocalSearchParams();
@@ -150,9 +151,8 @@ export default function ProductScreen() {
             value={basePrice.toString()}
             onChangeText={(e) => {
               const sanitizedValue = e.replace(",", ".");
-              const numericValue = parseFloat(sanitizedValue);
-              if (!isNaN(numericValue)) {
-                setBasePrice(numericValue.toString());
+              if (!isNaN(parseFloat(sanitizedValue))) {
+                setBasePrice(sanitizedValue.toString());
               } else {
                 setBasePrice("");
               }
