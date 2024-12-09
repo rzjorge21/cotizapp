@@ -21,7 +21,9 @@ export async function getDatabase() {
       await FileSystem.downloadAsync(asset.uri, sqlDir + internalDbName);
     }
 
-    const db = await SQLite.openDatabaseAsync(internalDbName);
+    const db = await SQLite.openDatabaseAsync(internalDbName, {
+      useNewConnection: true,
+    });
     Logger.log(`🥫 ${internalDbName} database was opened succesfully.`);
     return db;
   } catch (error) {

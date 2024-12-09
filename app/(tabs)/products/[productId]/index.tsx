@@ -42,7 +42,6 @@ export default function ProductScreen() {
   };
 
   const handleCreateProduct = async () => {
-    console.log("Creating data");
     const product: Omit<
       Product,
       "id" | "createdAt" | "updatedAt" | "deletedAt"
@@ -52,7 +51,6 @@ export default function ProductScreen() {
       createdBy: "DEV",
     };
     const res = await createProduct(product);
-    console.log(res);
     router.back();
   };
 
@@ -66,7 +64,6 @@ export default function ProductScreen() {
       createdBy: "DEV",
     };
     const res = await updateProduct(Number(productId), product);
-    console.log(res);
     router.back();
   };
 

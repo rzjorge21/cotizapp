@@ -24,6 +24,8 @@ import {
   updateClient,
 } from "@/services/clientService";
 import { Client } from "@/models";
+import { ShowError } from "@/utils/toast";
+import { Logger } from "@/utils/logger";
 
 export default function ClientScreen() {
   const { clientId = 0 } = useLocalSearchParams();
@@ -77,8 +79,7 @@ export default function ClientScreen() {
     }
   };
 
-  const handleCreateUser = async () => {
-    console.log("Creating data");
+  const handleCreateClient = async () => {
     const client: Omit<Client, "id" | "createdAt" | "updatedAt" | "deletedAt"> =
       {
         name: name,
@@ -87,7 +88,6 @@ export default function ClientScreen() {
         createdBy: "DEV",
       };
     const res = await createClient(client);
-    console.log(res);
     router.back();
   };
 
@@ -100,13 +100,23 @@ export default function ClientScreen() {
         createdBy: "DEV",
       };
     const res = await updateClient(Number(clientId), client);
-    console.log(res);
     router.back();
   };
 
   const handleSaveButton = async () => {
+    if (name === "") {
+      ShowError("Nombre del cliente no puede ser nulo.");
+      return;
+    }
+
+    const phoneRegex = /^[0-9]{9}$/; 
+    if (phoneNumber !== "" && !phoneRegex.test(phoneNumber)) {
+      ShowError("El número de teléfono no es válido.");
+      return;
+    }
+
     if (isCreating) {
-      handleCreateUser();
+      handleCreateClient();
     } else {
       handleUpdateClient();
     }
