@@ -58,6 +58,10 @@ export default function ClientScreen() {
     }
   };
 
+  const handleRemovePhoto = () => {
+    setSelectedImage(null);
+  };
+
   const getClientData = async () => {
     if (Number(clientId) == -1) {
       setIsCreating(true);
@@ -74,7 +78,7 @@ export default function ClientScreen() {
   };
 
   const handleCreateUser = async () => {
-    console.log("Creating data")
+    console.log("Creating data");
     const client: Omit<Client, "id" | "createdAt" | "updatedAt" | "deletedAt"> =
       {
         name: name,
@@ -101,12 +105,12 @@ export default function ClientScreen() {
   };
 
   const handleSaveButton = async () => {
-    if(isCreating) {
-      handleCreateUser()
+    if (isCreating) {
+      handleCreateUser();
     } else {
-      handleUpdateClient()
+      handleUpdateClient();
     }
-  }
+  };
 
   useEffect(() => {
     getClientData();
@@ -120,13 +124,11 @@ export default function ClientScreen() {
           rightElement={
             clientId ? (
               <View className="flex flex-row gap-2">
-                <TouchableOpacity className="rounded-full w-11 h-11 bg-white flex justify-center items-center">
+                {/* <TouchableOpacity className="rounded-full w-11 h-11 bg-white flex justify-center items-center">
                   <Feather name="file-plus" size={20} color="black" />
-                  {/* <Feather name="download" size={24} color="#d45f77" /> */}
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <TouchableOpacity className="rounded-full w-11 h-11 bg-black flex justify-center items-center">
                   <Feather name="trash" size={20} color="white" />
-                  {/* <Feather name="download" size={24} color="#d45f77" /> */}
                 </TouchableOpacity>
               </View>
             ) : (
@@ -167,24 +169,41 @@ export default function ClientScreen() {
 
         {/* Image Picker */}
         <View className="flex items-center mt-5">
-          <TouchableOpacity
-            onPress={handleAddPhoto}
-            className="bg-white w-36 h-36 rounded-full flex items-center justify-center"
-          >
-            {selectedImage ? (
-              <Image
-                source={{ uri: selectedImage }}
-                className="w-36 h-36 rounded-full"
-              />
-            ) : (
+          {selectedImage ? (
+            <View className="w-36 h-36">
+              <TouchableOpacity
+                onPress={handleAddPhoto}
+                className="bg-white w-36 h-36 rounded-full flex items-center justify-center relative"
+              >
+                <Image
+                  source={{ uri: selectedImage }}
+                  className="w-full h-full rounded-full"
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleRemovePhoto}
+                className="bg-black w-9 h-9 flex items-center justify-center rounded-full absolute top-0 right-0 mr-1 mt-1"
+              >
+                <Feather name="trash" size={18} color="white" />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <TouchableOpacity
+              onPress={handleAddPhoto}
+              className="bg-white w-36 h-36 rounded-full flex items-center justify-center relative"
+            >
               <Text className="text-black text-xl">+</Text>
-            )}
-          </TouchableOpacity>
+            </TouchableOpacity>
+          )}
         </View>
 
         {/* Save Button */}
         <View className="absolute bottom-0 right-0 p-4">
-          <TouchableOpacity onPress={() => {handleSaveButton()}}>
+          <TouchableOpacity
+            onPress={() => {
+              handleSaveButton();
+            }}
+          >
             <View className="bg-aloha-400 w-16 h-16 rounded-full flex items-center justify-center">
               <Feather name="save" size={24} color="black" />
             </View>
