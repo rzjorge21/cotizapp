@@ -5,10 +5,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { images } from "../constants";
 import CustomButton from "../components/CustomButton";
-import { useLoadingStore } from "../store/loadingStore";
-import { useAuthStore } from "../store/authStore";
-import { DemoServices } from "../services";
-import { ShowInfo } from "../utils/toast";
 import { IS_DEMO } from "../config";
 import CustomDemo from "../components/CustomDemo";
 import { initDatabase, removeDatabase } from "@/lib/sqlite/database";

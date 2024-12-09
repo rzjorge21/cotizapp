@@ -10,15 +10,17 @@ export async function getDatabase() {
     const sqlDir = FileSystem.documentDirectory + "SQLite/";
     Logger.log(`🥫 Opening database ${internalDbName}.`);
 
-    // Verifica si el archivo de base de datos ya existe
+    if (!(await FileSystem.getInfoAsync(sqlDir)).exists) {
+      await FileSystem.makeDirectoryAsync(sqlDir, { intermediates: true });
+    }
+
     if (!(await FileSystem.getInfoAsync(sqlDir + internalDbName)).exists) {
       Logger.log(`🥫 ${internalDbName} doesn't exists, creating a new one.`);
-      await FileSystem.makeDirectoryAsync(sqlDir, { intermediates: true });
       const asset = Asset.fromModule(require("../../assets/db/quot_v1.db"));
+      await asset.downloadAsync();
       await FileSystem.downloadAsync(asset.uri, sqlDir + internalDbName);
     }
 
-    // Abre la base de datos
     const db = await SQLite.openDatabaseAsync(internalDbName);
     Logger.log(`🥫 ${internalDbName} database was opened succesfully.`);
     return db;
@@ -30,10 +32,8 @@ export async function getDatabase() {
 
 export async function initDatabase() {
   try {
-    // Abre la base de datos
     const db = await getDatabase();
 
-    // Ejecuta las declaraciones SQL
     const sqlFileContent = create_table_statement;
     const sqlStatements = sqlFileContent
       .split(";")
