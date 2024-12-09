@@ -71,15 +71,20 @@ const Products = () => {
                   handleEditProduct(element.id);
                 }}
               >
-                <View className="flex flex-row items-center">
-                  <Text className="ml-2 text-sm">{element.name}</Text>
-                </View>
-
+                <Text
+                  className="text-sm shrink text-center"
+                  numberOfLines={2}
+                  ellipsizeMode="tail"
+                >
+                  {element.name}
+                </Text>
                 <View className="h-2 flex w-full items-center justify-center mt-1.5">
                   <View className="h-[1px] bg-black w-3"></View>
                 </View>
                 <View className="flex flex-row justify-center items-end gap-2 mr-2">
-                  <Text className="text-sm">S/.{element.price?.toFixed(2)}</Text>
+                  <Text className="text-sm">
+                    S/.{element.price?.toFixed(2)}
+                  </Text>
                   <Text className="text-xs">Precio</Text>
                 </View>
               </TouchableOpacity>

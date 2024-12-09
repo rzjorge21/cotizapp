@@ -70,7 +70,7 @@ const Clients = () => {
                 }}
               >
                 <View className="flex flex-row items-center">
-                  <View className="flex items-center justify-center h-14 aspect-square bg-aloha-100 rounded-full">
+                  <View className="flex items-center justify-center w-14 aspect-square bg-aloha-100 rounded-full">
                     {element.imageUri ? (
                       <Image
                         source={{ uri: element.imageUri }}
@@ -84,9 +84,13 @@ const Clients = () => {
                       <Text className="text-2xl">{element.name[0]}</Text>
                     )}
                   </View>
-                  <View className="ml-3">
-                    <Text className="text-lg">{element.name}</Text>
-                  </View>
+                  <Text
+                    className="ml-3 w-full text-base shrink"
+                    numberOfLines={2}
+                    ellipsizeMode="tail"
+                  >
+                    {element.name}
+                  </Text>
                 </View>
                 <View className="flex flex-row justify-center mt-2">
                   <View className="flex justify-center mr-2">
