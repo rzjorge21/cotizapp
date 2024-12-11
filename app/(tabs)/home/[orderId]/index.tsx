@@ -6,7 +6,7 @@ import {
   Image,
   Alert,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import { Feather } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -31,12 +31,17 @@ import {
 import { useRouter, useSearchParams } from "expo-router/build/hooks";
 import { BackHandler } from "react-native";
 import { ShowError } from "@/utils/toast";
+import { OrderDetail } from "@/components/OrderDetail";
+import { captureRef } from "react-native-view-shot";
+import * as MediaLibrary from "expo-media-library";
 
 export default function Quot() {
   const params = useLocalSearchParams<{ orderId?: string }>();
   const orderId = Number(params.orderId) || -1;
   const router = useRouter();
+  const orderDetailRef = useRef<View>(null);
 
+  const [status, requestPermission] = MediaLibrary.usePermissions();
   const [isCreating, setIsCreating] = useState(false);
   const {
     orderProducts,
@@ -48,6 +53,7 @@ export default function Quot() {
 
   const [code, setCode] = useState("");
   const [state, setState] = useState(QUOT_STATES.QUOTATION);
+  const [updatedAt, setUpdatedAt] = useState("");
 
   const [clients, setClients] = useState<Client[]>([]);
   const [selectedClient, setSelectedClient] = useState<number | null>(null);
@@ -126,6 +132,8 @@ export default function Quot() {
       setSelectedClient(result.clientId);
       setOrderProducts(result.items);
       setState(result.status);
+      setUpdatedAt(result.updatedAt);
+      setCode(result.id.toString());
     }
   };
 
@@ -133,6 +141,28 @@ export default function Quot() {
     clearOrderProducts();
     router.back();
     return true;
+  };
+
+  const handleGetClient = (): Client | null => {
+    return clients.find((client) => client.id == selectedClient) || null;
+  };
+
+  if (status === null) {
+    requestPermission();
+  }
+  const downloadOrderDetail = async () => {
+    try {
+      const localUri = await captureRef(orderDetailRef, {
+        height: 800,
+        quality: 1,
+      });
+      await MediaLibrary.saveToLibraryAsync(localUri);
+      if (localUri) {
+      alert("Orden Guardada!");
+      }
+    } catch (error) {
+      Logger.log("Error", error);
+    }
   };
 
   BackHandler.addEventListener("hardwareBackPress", handlePressBack);
@@ -153,6 +183,32 @@ export default function Quot() {
     };
   }, [router]);
 
+  if (false) {
+    return (
+      <SafeAreaView>
+        <TouchableOpacity
+          onPress={downloadOrderDetail}
+          className="rounded-full w-11 h-11 bg-white flex justify-center items-center"
+        >
+          <Feather name="download" size={20} color="black" />
+        </TouchableOpacity>
+        <View
+          className="w-full bg-white"
+          ref={orderDetailRef}
+          collapsable={false}
+        >
+          <OrderDetail
+            code={code}
+            updatedAt={updatedAt}
+            state={state}
+            client={handleGetClient()}
+            orderProducts={orderProducts}
+          />
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <GestureHandlerRootView>
       <SafeAreaView className="min-h-full p-4 relative">
@@ -164,12 +220,15 @@ export default function Quot() {
             <>
               {!isCreating ? (
                 <View className="flex flex-row gap-2">
-                  {/* <TouchableOpacity className="rounded-full w-11 h-11 bg-white flex justify-center items-center">
+                  <TouchableOpacity
+                    onPress={downloadOrderDetail}
+                    className="rounded-full w-11 h-11 bg-white flex justify-center items-center"
+                  >
                     <Feather name="download" size={20} color="black" />
                   </TouchableOpacity>
                   <TouchableOpacity className="rounded-full w-11 h-11 bg-white flex justify-center items-center">
                     <Feather name="share-2" size={20} color="black" />
-                  </TouchableOpacity> */}
+                  </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => {
                       handleDeleteOrder();
@@ -189,7 +248,9 @@ export default function Quot() {
         <View className="py-2" />
         {!isCreating ? (
           <View className="flex flex-row justify-between">
-            <Text className="text-2xl font-pbold">Ver Cotización</Text>
+            <Text className="text-2xl font-pbold">
+              {state == QUOT_STATES.QUOTATION ? "Ver Cotización" : "Ver Orden"}
+            </Text>
             {state == QUOT_STATES.QUOTATION ? (
               <TouchableOpacity
                 onPress={() => {
@@ -302,6 +363,22 @@ export default function Quot() {
             {" "}
             Total: S/. {getTotalPrice().toFixed(2)}
           </Text>
+        </View>
+
+        <View className="absolute translate-x-full z-[-1] opacity-0">
+          <View
+            className="w-full bg-white"
+            ref={orderDetailRef}
+            collapsable={false}
+          >
+            <OrderDetail
+              code={code}
+              updatedAt={updatedAt}
+              state={state}
+              client={handleGetClient()}
+              orderProducts={orderProducts}
+            />
+          </View>
         </View>
       </SafeAreaView>
     </GestureHandlerRootView>
