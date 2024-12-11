@@ -89,8 +89,8 @@ export function OrderDetail({
         <Text className="flex-1 font-bold text-lg" numberOfLines={1}>
           Total
         </Text>
-        <Text className="w-12 text-right font-bold text-lg">
-          {getTotalPrice().toFixed(2)}
+        <Text className="w-24 text-right font-bold text-lg">
+          S/. {getTotalPrice().toFixed(2)}
         </Text>
       </View>
       <View className="h-2 flex w-full items-center justify-center my-2">

@@ -56,6 +56,7 @@ export default function Quot() {
   const [code, setCode] = useState("");
   const [state, setState] = useState(QUOT_STATES.QUOTATION);
   const [updatedAt, setUpdatedAt] = useState("");
+  const [totalPrice, setTotalPrice] = useState(0);
 
   const [clients, setClients] = useState<Client[]>([]);
   const [selectedClient, setSelectedClient] = useState<number | null>(null);
@@ -109,6 +110,7 @@ export default function Quot() {
   };
 
   const getTotalPrice = () => {
+    if (state == QUOT_STATES.ORDER) return totalPrice
     return orderProducts.reduce((total, orderProduct) => {
       return total + orderProduct.price * orderProduct.quantity;
     }, 0);
@@ -135,6 +137,7 @@ export default function Quot() {
       setOrderProducts(result.items);
       setState(result.status);
       setUpdatedAt(result.updatedAt);
+      setTotalPrice(result.totalPrice | 0);
       setCode(result.id.toString());
     }
   };
