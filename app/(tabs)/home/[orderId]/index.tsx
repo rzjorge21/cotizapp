@@ -34,6 +34,7 @@ import { ShowError } from "@/utils/toast";
 import { OrderDetail } from "@/components/OrderDetail";
 import { captureRef } from "react-native-view-shot";
 import * as MediaLibrary from "expo-media-library";
+import { useLoadingStore } from "../../../../store/loadingStore";
 
 export default function Quot() {
   const params = useLocalSearchParams<{ orderId?: string }>();
@@ -41,6 +42,7 @@ export default function Quot() {
   const router = useRouter();
   const orderDetailRef = useRef<View>(null);
 
+  const { showLoading, hideLoading } = useLoadingStore();
   const [status, requestPermission] = MediaLibrary.usePermissions();
   const [isCreating, setIsCreating] = useState(false);
   const {
@@ -158,7 +160,7 @@ export default function Quot() {
       });
       await MediaLibrary.saveToLibraryAsync(localUri);
       if (localUri) {
-      alert("Orden Guardada!");
+        alert("Orden Guardada!");
       }
     } catch (error) {
       Logger.log("Error", error);
@@ -176,38 +178,15 @@ export default function Quot() {
         const _order = fetchOrder();
       }
     });
-    fetchOrder();
+    showLoading();
+    fetchOrder().then(() => {
+      hideLoading();
+    });
 
     return () => {
       BackHandler.removeEventListener("hardwareBackPress", handlePressBack);
     };
   }, [router]);
-
-  if (false) {
-    return (
-      <SafeAreaView>
-        <TouchableOpacity
-          onPress={downloadOrderDetail}
-          className="rounded-full w-11 h-11 bg-white flex justify-center items-center"
-        >
-          <Feather name="download" size={20} color="black" />
-        </TouchableOpacity>
-        <View
-          className="w-full bg-white"
-          ref={orderDetailRef}
-          collapsable={false}
-        >
-          <OrderDetail
-            code={code}
-            updatedAt={updatedAt}
-            state={state}
-            client={handleGetClient()}
-            orderProducts={orderProducts}
-          />
-        </View>
-      </SafeAreaView>
-    );
-  }
 
   return (
     <GestureHandlerRootView>
@@ -220,15 +199,19 @@ export default function Quot() {
             <>
               {!isCreating ? (
                 <View className="flex flex-row gap-2">
-                  <TouchableOpacity
-                    onPress={downloadOrderDetail}
-                    className="rounded-full w-11 h-11 bg-white flex justify-center items-center"
-                  >
-                    <Feather name="download" size={20} color="black" />
-                  </TouchableOpacity>
-                  <TouchableOpacity className="rounded-full w-11 h-11 bg-white flex justify-center items-center">
+                  {state == QUOT_STATES.ORDER ? (
+                    <TouchableOpacity
+                      onPress={downloadOrderDetail}
+                      className="rounded-full w-11 h-11 bg-white flex justify-center items-center"
+                    >
+                      <Feather name="download" size={20} color="black" />
+                    </TouchableOpacity>
+                  ) : (
+                    <></>
+                  )}
+                  {/* <TouchableOpacity className="rounded-full w-11 h-11 bg-white flex justify-center items-center">
                     <Feather name="share-2" size={20} color="black" />
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                   <TouchableOpacity
                     onPress={() => {
                       handleDeleteOrder();
